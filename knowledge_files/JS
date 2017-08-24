@@ -1,0 +1,31 @@
+JS写入HTML输出流
+document.write("<h1>这是一个标题</h1>");
+document.write("<p>这是一个段落。</p>");
+
+典型JS:
+<h1>我的第一段 JavaScript</h1>
+<p id="demo">
+JavaScript 能改变 HTML 元素的内容。
+</p>
+<script>
+function myFunction()
+{
+	x=document.getElementById("demo");  // 找到元素
+	x.innerHTML="Hello JavaScript!";    // 改变内容
+}
+</script>
+<button type="button" onclick="myFunction()">点击这里</button>
+
+onclick=函数名
+
+通常的做法是把函数放入 <head> 部分中，或者放在页面底部。这样就可以把它们安置到同一处位置，不会干扰页面的内容
+
+<script src="myScript.js"></script>外部引用JS文件
+
+JSON 语法是 JavaScript 对象表示法语法的子集。
+数据书写格式名称/值对中
+数据由逗号分隔
+大括号保存对象
+中括号保存数组
+
+纯文本

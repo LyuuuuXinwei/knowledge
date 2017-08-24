@@ -1,0 +1,277 @@
+use database_name;
+set names utf8;
+
+SELECT * FROM table;
+SELECT column_name,column_name2 FROM table;
+SELECT DISTINCT column_name,column_name2 FROM table;
+SELECT column_name,column_name
+FROM table_name
+WHERE column_name operator value; country='CN'
+》》》》》》》》》》》》operator:= < > >= <= <>(不等于) BETWEEN LIKE IN
+SELECT column_name(s)
+FROM table_name
+LIMIT number;
+SELECT column_name(s)
+FROM table_name
+WHERE column_name LIKE pattern;
+》》》》》》》pattern：通配符：'G%':以G开头 '%k'以k结尾 '%oo%'中间有oo
+    %	替代 0 个或多个字符
+    _	替代一个字符
+    [charlist]	字符列中的任何单一字符
+    [^charlist]或[!charlist]	不在字符列中的任何单一字符
+SELECT column_name(s)
+FROM table_name
+WHERE column_name REGEXP 或 NOT REGEXP re()正则;
+SELECT column_name(s)
+FROM table_name
+WHERE column_name IN (value1,value2,...);
+SELECT column_name(s)
+FROM table_name
+WHERE column_name BETWEEN value1 AND value2; ##文本值也可以BETWEEN
+SELECT * FROM Websites
+WHERE (alexa BETWEEN 1 AND 20)
+AND NOT country IN ('USA', 'IND'); #### NOT country IN
+
+表的别名
+SELECT column_name(s)
+FROM table_name AS alias_name;
+列的别名
+SELECT column_name AS alias_name
+FROM table_name;
+合并列为列表
+SELECT name, CONCAT(url, ', ', alexa, ', ', country) AS site_info
+FROM Websites;
+从两个表中选取
+SELECT w.name, w.url, a.count, a.date
+FROM Websites AS w, access_log AS a
+WHERE a.site_id=w.id and w.name="菜鸟教程";
+
+JOIN：
+SELECT Websites.id, Websites.name, access_log.count, access_log.date
+FROM Websites
+INNER JOIN access_log
+ON Websites.id=access_log.site_id; ###ON
+INNER JOIN：如果前表中有至少一个在后表能匹配，则返回行，有多个匹配则返回多个 ###INNER JOIN == JOIN
+LEFT JOIN：即使右表中没有匹配，也从左表返回所有的行，左完全
+RIGHT JOIN：即使左表中没有匹配，也从右表返回所有的行，又完全
+FULL （OUTER）JOIN：只要其中一个表中存在匹配，则返回行 mySQL不支持
+
+UNION
+SELECT column_name(s) FROM table1
+UNION #选取不同值 UNION ALL则允许重复的值
+SELECT column_name(s) FROM table2;
+UNION可以用来统计类型，UNION ALL可以为每个类型计数
+
+拷贝/选取至新表
+CREATE TABLE table_name SELECT * FROM table_name_old
+拷贝/选取数据至另一个表
+MYSQL:INSERT INTO table_name（column1，column2） SELECT column3 FROM table_name2……
+
+AND OR
+
+SELECT column_name,column_name
+FROM table_name
+ORDER BY column_name,column_name ASC|DESC; DESC:降序
+多列按书写顺序
+
+INSERT INTO table_name (column1,column2,column3,...)
+VALUES (value1,value2,value3,...);
+
+UPDATE table_name
+SET column1=value1,column2=value2,...
+WHERE some_column=some_value;
+
+DELETE FROM table_name
+WHERE some_column=some_value;
+
+CREATE DATABASE
+ALTER DATABASE
+
+CREATE TABLE table_name
+(
+column_name1 data_type(size),
+column_name2 data_type(size),
+column_name3 data_type(size),
+....
+);
+data_type 参数规定列的数据类型
+例如
+int-整数 varchar-可变长字符 char-固定长字符 decimal-小数 date-日期 TIME-时间 timestamp-时间戳 datetime-日期和时间
+BINARY(n)-二进制串 BOOLEAN-存储 TRUE 或 FALSE 值 MYSQL:N/A
+size:列元素最大长度 varchar(255)
+
+约束类型：
+NOT NULL - 指示某列不能存储 NULL 值。
+UNIQUE - 保证某列的每行必须有唯一的值。【唯一性】
+PRIMARY KEY - NOT NULL 和 UNIQUE 的结合。每个表必须且仅有一个【唯一性】
+FOREIGN KEY - 一个表中的 FOREIGN KEY 指向另一个表中的 PRIMARY KEY。。
+CHECK - 保证列中的值符合指定的条件。
+DEFAULT - 规定没有给列赋值时的默认值。
+创表时约束：
+CREATE TABLE table_name
+(
+column_name1 data_type(size) constraint_name,AUTO_INCREMENT==100
+column_name2 data_type(size) constraint_name,
+column_name3 data_type(size) constraint_name,DEFAULT 'Sandnes'/GETDATE()
+....
+UNIQUE(column_name1)（MYSQL的写法）
+CONSTRAINT n UNIQUE (P_Id,LastName)（命名约束为n。及多列UNIQUE约束的写法）
+PRIMARY KEY (P_Id)
+CONSTRAINT pk_PersonID PRIMARY KEY (P_Id,LastName)（多个列的主键）
+FOREIGN KEY (P_Id) REFERENCES Persons(P_Id)
+CONSTRAINT fk_PerOrders FOREIGN KEY (P_Id)REFERENCES Persons(P_Id)
+CHECK (P_Id>0)
+CONSTRAINT chk_Person CHECK (P_Id>0 AND City='Sandnes')
+);
+创表后约束：
+ALTER TABLE Persons
+ADD UNIQUE (P_Id)
+ALTER TABLE Persons
+ADD CONSTRAINT uc_PersonID UNIQUE (P_Id,LastName)（命名约束。及多列UNIQUE约束的写法）
+撤销UNIQUE约束
+ALTER TABLE Persons
+DROP INDEX uc_PersonID/DROP CONSTRAINT uc_PersonID
+
+ALTER TABLE Persons
+ADD PRIMARY KEY (P_Id)
+ALTER TABLE Persons
+ADD CONSTRAINT pk_PersonID PRIMARY KEY (P_Id,LastName)
+ALTER TABLE Persons
+DROP PRIMARY KEY
+
+ALTER TABLE Orders
+ADD FOREIGN KEY (P_Id)
+REFERENCES Persons(P_Id)
+ALTER TABLE Orders
+ADD CONSTRAINT fk_PerOrders
+FOREIGN KEY (P_Id)
+REFERENCES Persons(P_Id)
+ALTER TABLE Orders
+DROP FOREIGN KEY fk_PerOrders
+
+ALTER TABLE Persons
+ADD CHECK (P_Id>0)
+ALTER TABLE Persons
+ADD CONSTRAINT chk_Person CHECK (P_Id>0 AND City='Sandnes')
+ALTER TABLE Persons
+DROP CHECK chk_Person
+
+ALTER TABLE Persons
+ALTER City SET DEFAULT 'SANDNES'
+ALTER TABLE Persons
+ALTER City DROP DEFAULT
+
+在常被查找的表和列创建索引
+CREATE （UNIQUE）INDEX index_name
+ON table_name (column_name)
+ALTER TABLE table_name DROP INDEX index_name
+
+DROP TABLE table_name
+DROP DATABASE database_name
+TRUNCATE TABLE table_name 清空表
+
+增删改-列：
+ALTER TABLE table_name
+ADD column_name datatype
+DROP COLUMN column_name
+MODIFY COLUMN column_name datatype
+
+ALTER TABLE Persons AUTO_INCREMENT=100
+INSERT INTO Persons (FirstName,LastName)
+VALUES ('Lars','Monsen') 此时不需插入AUTO_INCREMENT
+
+创建视图
+CREATE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+例如
+CREATE VIEW [Products Above Average Price] AS
+SELECT ProductName,UnitPrice
+FROM Products
+WHERE UnitPrice>(SELECT AVG(UnitPrice) FROM Products) ###注意嵌套
+例如
+CREATE VIEW [Category Sales For 1997] AS
+SELECT DISTINCT CategoryName,Sum(ProductSales) AS CategorySales
+FROM [Product Sales for 1997]
+GROUP BY CategoryName ###从视图中创建视图
+查询视图
+SELECT * FROM view_name
+WHERE CategoryName='Beverages' ###查询条件
+更新视图
+CREATE OR REPLACE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+删除
+DROP VIEW view_name
+
+date类型
+mySQL格式：
+DATE - 格式：YYYY-MM-DD
+DATETIME - 格式：YYYY-MM-DD HH:MM:SS
+TIMESTAMP - 格式：YYYY-MM-DD HH:MM:SS
+YEAR - 格式：YYYY 或 YY
+
+NOW()	返回当前的日期和时间
+CURDATE()	返回当前的日期
+CURTIME()	返回当前的时间
+DATE()	提取日期或日期/时间表达式的日期部分
+
+NULL未知值的占位符
+IS NULL IS NOT NULL
+处理NULL处的值：
+SELECT ProductName,UnitPrice*(UnitsInStock+IFNULL/COALESCE(UnitsOnOrder,0)) ###计算式的查询，产生产品名称-总价值的表
+FROM Products
+
+
+可用于计数计算的函数
+SQL Aggregate 函数计算从列中取得的值，返回一个单一的值。
+有用的 Aggregate 函数：
+AVG() - 返回平均值
+例如SELECT AVG(count) AS CountAverage FROM access_log;
+COUNT() - 返回行数，NULL不计入
+SELECT COUNT(column_name/*) FROM table_name;
+SELECT COUNT(DISTINCT column_name) FROM table_name;
+FIRST() - 返回第一个记录的值
+LAST() - 返回最后一个记录的值
+mysql:
+SELECT column_name FROM table_name
+ORDER BY column_name ASC
+LIMIT 1;
+MAX() - 返回最大值
+MIN() - 返回最小值
+SELECT MAX/MIN(column_name) FROM table_name;
+SUM() - 返回总和
+SELECT SUM(column_name) FROM table_name;
+GROUP BY()
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name;
+例子：
+SELECT site_id, SUM(access_log.count) AS nums
+FROM access_log GROUP BY site_id;
+根据分组列的种类聚合
+HAVING:聚合后的筛选
+SELECT Websites.name, SUM(access_log.count) AS nums FROM Websites
+INNER JOIN access_log
+ON Websites.id=access_log.site_id
+WHERE Websites.alexa < 200
+GROUP BY Websites.name
+HAVING SUM(access_log.count) > 200;
+
+SQL Scalar 函数基于输入值，返回一个单一的值。
+有用的 Scalar 函数：
+UCASE() - 将某个字段转换为大写
+LCASE() - 将某个字段转换为小写
+MID() - 从某个文本字段提取字符，MySql 中使用
+SELECT MID(name,1,4) AS ShortTitle
+FROM Websites;
+SubString(字段，1，end) - 从某个文本字段提取字符
+LEN() - 返回某个文本字段的长度
+ROUND() - 对某个数值字段进行指定小数位数的四舍五入
+NOW() - 返回当前的系统日期和时间
+FORMAT() - 格式化某个字段的显示方式
+SELECT name, url, DATE_FORMAT(Now(),'%Y-%m-%d') AS date
+FROM Websites;

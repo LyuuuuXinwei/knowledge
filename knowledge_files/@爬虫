@@ -1,0 +1,44 @@
+XPATH：高效的分析语言，表达清晰简单，掌握了以后基本可以不用正则
+ Beautifulsoup：
+美丽汤模块解析网页神器,一款神器，如果不用一些爬虫框架（如后文讲到的scrapy），配合request，urllib等模块（后面会详细讲），可以编写各种小巧精干的爬虫脚本
+抓包工具：
+推荐httpfox，火狐浏览器下的插件,比谷歌火狐系自带的F12工具都要好，可以方便查看网站收包发包的信息
+XPATH CHECKER (火狐插件）：
+非常不错的xpath测试工具
+正则表达测试工具：
+里面有很多现成的正则表达式可以用，也可以进行参考！
+
+爬虫框架scrapy
+遇到动态页面怎么办？selenium/phantomJS（不显示网页的selenium）
+
+遇到反爬虫策略验证码之类咋整？
+PIL
+opencv
+pybrain
+打码平台
+
+数据库
+mysql
+mongodb
+sqllite
+
+爬来的东西怎么用？
+numpy 数据分析，类似matlab的模块
+pandas（基于numpy的数据分析模块
+
+进阶技术
+多线程、分布式，代理IP池防止被封锁IP
+
+爬虫相关的库：
+urllib,urllib2,requests,lxml.html-xpath,bs4,scrapy,pyspider
+静态网页：reuuests+bs4+re:requests负责处理http协议，bs4负责将网页变成结构化数据,bs4爬不了的用re
+动态网页：+selenium/ghost或Chrome开发者工具用requests爬js
+
+0. 爬虫的基本思路
+ a. 通过URL或者文件获取网页
+ b. 分析要爬取的目标内容所在的位置
+ c. 用元素选择器快速提取(Raw) 目标内容
+ d. 处理提取出来的目标内容 （ 通常整理合成一个 Json）
+ e. 存储处理好的目标内容 （比如放到 MongoDB 之类的数据库，或者写进文件里。）
+
+

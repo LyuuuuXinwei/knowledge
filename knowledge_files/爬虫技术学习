@@ -1,0 +1,108 @@
+网络爬虫主要分3个大的版块：抓取，分析，存储
+【------------------------------------------------------------------------------------------------】
+抓取：
+urllib:
+常用模块：request/parse
+
+with request.urlopen('https://www.zhihu.com/question/29775447') as f
+f.status：200状态码
+f.reason ok
+for k,v in f.getheaders():返回响应头部
+data=f.read()
+data.decode('utf-8') data 是JSON数据
+
+req=request.Request()
+req.add_header() 添加请求头部
+
+request.urlopen自动带了头部等，request.Request()则没有
+
+【对于登陆情况的处理
+1 使用表单登陆
+GET时urlopen只用传url,POST时urlopen('sssss',data=login_data.encode('utf-8'))
+login_data = parse.urlencode([
+    ('username', email),
+    ('password', password),
+    ('entry', 'mweibo'),
+    ('client_id', ''),
+    ('savestate', '1'),
+    ('ec', ''),
+    ('pagerefer', 'https://passport.weibo.cn/signin/welcome?entry=mweibo&r=http%3A%2F%2Fm.weibo.cn%2F')
+]) ？？？并不太懂这个编码的格式从哪搞
+
+2 使用cookie登录
+
+【对于反爬虫机制的处理
+1 使用代理
+urllib.request. ProxyHandler
+2 时间设置
+
+3 伪装成浏览器，或者反“反盗链”
+
+【对于断线重连
+【多进程抓取
+
+【验证码识别
+对于网站有验证码的情况，我们有三种办法：
+
+使用代理，更新IP。
+使用cookie登陆。
+验证码识别。
+
+【异常处理
+网页在服务器上不存在
+try:
+html = urlopen
+except HTTPError as e:
+print(e)
+服务器不存在
+if html is None:
+print("URL is not found")
+else:
+# 程序继续
+
+用具有稠密异常处理功能的指向目标内容（数据文字图）的通用函数，重用代码，用函数遍历URL源表
+
+【------------------------------------------------------------------------------------------------】
+分析：
+常见的分析工具有正则表达式，BeautifulSoup，lxml，HTMLparser等等
+BeautifulSoup:
+按标签提取
+url=request.urlopen('http://www.pythonscraping.com/pages/page1.html')
+bsobj=BeautifulSoup(url.read())
+print(bsobj.h1)
+按属性提取：
+nameList = bsObj.findAll("span", {"class":{"green"，'red'}})
+for name in nameList:
+print(name.get_text()) get_text()清除其中HTML所有标签超链接等
+bsObj.div.findAll("img") 会找出文档中第一个div 标签，然后获取这个div 后代里所有的img 标签列表。
+
+导航树：
+子标签和后代标签：
+for child in bsObj.find("table",{"id":"giftList"}).children/descendants:
+兄弟标签：
+for sibling in bsObj.find("table",{"id":"giftList"}).tr.next_siblings:
+这个函数只调用后面的兄弟标签，且不包括自己，previous_siblings之前
+还有next_sibling 和previous_sibling
+父标签：
+bsObj.find("img",{"src":"../img/gifts/img1.jpg"}).parent.previous_sibling.get_text())
+下面的代码就是获取有两个属性的标签：
+soup.findAll(lambda tag: len(tag.attrs) == 2)
+寻找网页中所有链接：
+for link in bsObj.findAll("a"):
+if 'href' in link.attrs:
+print(link.attrs['href'])
+
+准确提取想要的内容需要经验，经验来自于观察，观察同一类信息的排布逻辑
+
+比如维基百科词条链接的特点：
+• 它们都在id 是bodyContent 的div 标签里
+• URL 链接不包含分号
+• URL 链接都以/wiki/ 开头
+
+【------------------------------------------------------------------------------------------------】
+储存：
+可以选择存入文本文件，也可以选择存入MySQL或MongoDB数据库等
+存储有两个需要注意的问题：
+
+如何进行网页去重？
+内容以什么形式存储？

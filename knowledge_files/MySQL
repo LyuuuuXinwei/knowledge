@@ -1,0 +1,37 @@
+SQLite是一种嵌入式数据库，它的数据库就是一个文件。
+由于SQLite本身是C写的，而且体积很小，所以，经常被集成到各种应用程序中，甚至在iOS和Android的App中都可以集成。
+Python就内置了SQLite3，但不能承受高并发访问，适合桌面和移动应用。
+MySQL服务器以独立的进程运行，并通过网络对外服务，所以，需要支持Python的MySQL驱动来连接到MySQL服务器。MySQL官方提供了mysql-connector-python驱动
+在Python中，最有名的ORM框架是SQLAlchemy
+
+exit退出
+SHOW DATABASE/TABLE/COLUMN FROM/
+DESCRIBE table查看表的结构
+
+PyMySQL：
+pymysql.Connect()参数说明
+host(str):      MySQL服务器地址
+port(int):      MySQL服务器端口号
+user(str):      用户名
+passwd(str):    密码
+db(str):        数据库名称
+charset(str):   连接编码
+
+connection对象支持的方法
+cursor()        使用该连接创建并返回游标
+commit()        提交当前事务
+rollback()      回滚当前事务
+close()         关闭连接
+
+cursor对象支持的方法
+execute(op)     执行一个数据库的查询命令
+fetchone()      取得结果集的下一行
+fetchmany(size) 获取结果集的下几行
+fetchall()      获取结果集中的所有行
+rowcount()      返回数据条数或影响行数
+close()         关闭游标对象
+
+SHOW DATABASES
+SHOW TABLES
+
+root和普通用户？？？？

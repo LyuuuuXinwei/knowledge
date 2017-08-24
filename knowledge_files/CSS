@@ -1,0 +1,32 @@
+选择器，以及一条或多条声明，每条声明由一个属性和一个值组成。
+属性（property）是您希望设置的样式属性（style attribute）总是以分号(;)结束，声明组以大括号({})括起来:
+
+/*这是个注释*/
+
+id选择器把HTML的特定id标签设置样式 #id
+class选择器，多组class 标签.class/class=
+
+插入样式表的方法有三种:
+外部样式表(External style sheet)：多界面，每个页面使用 <link> 标签链接到样式表
+内部样式表(Internal style sheet)：<head><style>
+内联样式(Inline style)<p style="color:sienna;margin-left:20px">这是一个段落。</p>
+
+内部覆盖外部
+
+CSS属性：
+1.背景
+background-color
+background-image
+background-repeat
+background-attachment
+background-position
+2.文本
+color
+text-align
+text-decoration
+text-transform
+text-indent缩进
+3.字体
+4.链接
+5.列表
+6.表格

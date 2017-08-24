@@ -1,0 +1,109 @@
+SVN:集中式版本控制系统的代表
+GIT:分布式
+
+Windows下要使用很多Linux/Unix的工具时，需要Cygwin这样的模拟环境，msysgit是Windows版的Git
+
+只能追踪文本文件改动
+
+git config
+pwd
+cd
+mkdir
+git init 当前目录变为git仓库
+git add filename.filetype 添加新文件/修改
+git commit -m 'xxx' 提交到-m后面输入的是本次提交的说明
+可以add很多文件一次commit 需要提交的文件修改通通放到暂存区，然后，一次性提交暂存区的所有修改到当前分支，master分支
+git status 仓库变化情况
+git diff filename.filetype 文件修改变化
+git log 命令显示从最近到最远的提交说明 --pretty=oneline 排版在一行
+git reset HEAD^ 恢复到上一版 HEAD^^上上版 HEAD~10往上10个
+git reset (commit id 前几位)
+cat filename。filetype查看当前文件内容
+git reflog 命令历史 关电脑恢复版本寻找commit id
+git checkout -- filename.filetype 工作区回溯操作：对于修改后没放入暂存区的文件回到上一个版本，对于放入暂存区的（add了）文件回到add时，暂存区里的版本
+git reset HEAD filename.filetype 暂存区回溯操作对于已经add过想改的，回到add前，清空暂存区
+工作区：电脑目录，改文件的地方
+版本库包括：分支和暂存区
+add:从工作区提交到暂存区
+commit：从暂存区提交到分支
+在文件夹中删除文件/rm file：1.确认删除：git rm file,git commit 2.后悔删除：git checkout -- filename.txt
+
+########## 推送到GitHub
+git remote add origin git@github.com:lyuuuuxinwei/learngit.git 关联GitHub远程库
+git push -u origin master 关联本地master分支与远程master并推送本地到远程
+git push origin master 推送本地master到远程
+
+git clone git@github.com:lyuuuuxinwei/gitskills.git 克隆远程库
+但是只能看到master分支
+git checkout -b dev origin/dev创建本地dev分支
+git push origin dev 推送分支到远程
+不同人员推送的分支有冲突时：
+1.指定本地dev分支与远程origin/dev分支的链接：git branch --set-upstream dev origin/dev
+2.git pull
+
+多人协作的工作模式通常是这样：
+首先，可以试图用git push origin branch-name推送自己的修改；
+如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+如果合并有冲突，则解决冲突，并在本地提交；
+没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！
+如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。
+
+分支：git checkout -b dev 其中-b创建并切换：git branch dev + git checkout dev
+git branch命令会列出所有分支
+git merge dev 合并分支到当前分支
+git branch 分值列表
+git branch -d dev 删除分支
+
+git status+git cat 查看冲突
+git log --graph --pretty=oneline --abbrev-commit ###查看分支合并图
+git merge --no-ff -m "xxx" dev :--no-ff禁用fast forward，删除后不会丢掉分支信息
+
+层级：master用来发布程序更新，平时所有人在自己单独的分支上工作，是不是合并到dev，dev--master
+
+在开发中，每个BUG通过创建一个新的临时分支来修复，然后合并到master再删除
+工作现场保存：
+git stash
+git atash list 查看
+git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除
+另一种方式是用git stash pop，恢复的同时把stash内容也删了
+git stash apply stash@{0}指定
+
+在开发中，添加新功能：最好新建一个feature分支，在上面开发，完成后，合并，最后，删除该feature分支，在dev分支之下
+git branch -D feature-vulcan 未合并强行删除
+
+git remote -v 查看远程库的信息，如果没有推送权限，就看不到push的地址
+git push origin master/dev/feature推送到远程库
+master分支是主分支，因此要时刻与远程同步；
+dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+
+github:git远程仓库托管
+
+Git比其他版本控制系统设计得优秀，因为Git跟踪并管理的是修改，而非文件
+
+打标签：
+1.切换到需要打标签的分支
+2.git tag v1.0
+3.git tag 查看标签列表
+4.打过去的标签：
+1.查commit ID ：git log --pretty=oneline --abbrev-commit
+2.git tag v1.0 6224937/git tag -a（-s用私钥PGP签名一个标签） v0.1 -m "version 0.1 released" 3628164 标签说明
+5.git show 标签信息
+6.git tag -d v0.1删除
+7.git push origin v1.0 推送/git push origin --tags推送所有
+8.git push origin :refs/tags/v0.9远程删除
+
+.gitignore
+git add -f filename 忽略.gitignore强制加入
+git check-ignore -v filename 查看加入不成功的原因
+
+设置别名：
+git config --global alias.st status 用st代替status
+$ git config --global alias.co checkout
+$ git config --global alias.ci commit
+$ git config --global alias.br branch
+$ git config --global alias.last 'log -1'
+$ git config --global alias.unstage 'reset HEAD'
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+cat .git/config /cat .gitconfig 查看配置文件，复原则删除对应行

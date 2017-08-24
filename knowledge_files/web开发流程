@@ -1,0 +1,11 @@
+
+Jinja2是基于python的模板引擎，Flask使用jinja2作为框架的模板系统
+CSS框架：Semantic UI，Bootstrap
+JavaScript库：jQuery
+
+DevOps：开发和运维要变成一个整体,DevOps理念需要把运维、监控等功能融入到开发中。你想服务器升级时不中断用户服务？那就得在开发时考虑到这一点
+
+webapp部署到Linux服务器:
+首先得有一台Linux服务器。要在公网上体验的同学，可以在Amazon的AWS申请一台EC2虚拟机（免费使用1年）
+或者使用国内的一些云服务器，一般都提供Ubuntu Server的镜像
+想在本地部署的同学，请安装虚拟机，推荐使用VirtualBox

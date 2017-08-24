@@ -1,0 +1,173 @@
+<!DOCTYPE html> 声明为 HTML5 文档
+<html> 元素是 HTML 页面的根元素
+<head> 元素包含了文档的元（meta）数据
+<title> 元素描述了文档的标题
+<body> 元素包含了可见的页面内容
+<h1> 元素定义一个大标题
+<p> 元素定义一个段落
+
+只有 <body> 区域 (白色部分) 才会在浏览器中显示。
+
+<head>
+<meta charset="UTF-8">
+<title>页面标题</title>
+</head>
+
+HTML 标题（Heading）是通过<h1> - <h6> 标签来定义的.
+HTML 链接是通过标签 <a> 来定义的.<a href="http://www.runoob.com">这是一个链接</a>
+HTML 图像是通过标签 <img> 来定义的.<img src="/images/logo.png" width="258" height="39" />
+
+ <br />空行
+ span是一个in-line元素，翻译为内联元素。它的特点是不会独占一行。它和块（block）级元素是相对的，块级元素是独占一行的
+
+属性值应该始终被包括在引号内,属性值本身就含有双引号，那么您必须使用单引号
+
+class	为html元素定义一个或多个类名（classname）(类名从样式文件引入)
+id	定义元素的唯一id
+style	规定元素的行内样式（inline style）
+title	描述了元素的额外信息 (作为工具条使用)
+
+hr 元素可用于分隔内容。水平线
+<p>这是一个段落。</p>
+<hr>
+<p>这是一个段落。</p>
+
+<!-- 这是一个注释 -->
+
+如果您希望在不产生一个新段落的情况下进行换行（新行），请使用 <br /> 标签：
+<p>这个<br>段落<br>演示了分行的效果</p>
+
+格式化标签
+<b><strong>加粗<em><i>斜体<big><small><sub>下标<sup>上标
+
+<pre>保持源代码中的任何空行和空格
+
+还有的标签定义地址文字方向插入字删除字引用计算机输出标签
+
+<a href="url">链接文本</a>
+"链接文本" 不必一定是文本。图片或其他 HTML 元素都可以成为链接。
+target 属性，你可以定义被链接的文档在何处显示
+<a href="http://www.runoob.com/" target="_blank">访问菜鸟教程!</a>在新标签页
+
+<a id="tips">有用的提示部分</a>
+<a href="#tips">访问有用的提示部分</a>
+书签
+
+head中的标签<title>, <style>, <meta>, <link>, <script>, <noscript>, and <base>.
+<title> - 定义了HTML文档的标题
+使用 <title> 标签定义HTML文档的标题
+<base> - 定义了所有链接的URL
+使用 <base> 定义页面中所有链接默认的链接目标地址
+<base href="http://www.runoob.com/images/" target="_blank">
+<meta> - 提供了HTML文档的meta标记
+使用 <meta> 元素来描述HTML文档的描述，关键词，作者，字符集等。
+<link> 标签通常用于链接到样式表:
+<head>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
+<style> 标签定义了HTML文档的样式文件引用地址。也可以直接添加样式：
+<style type="text/css">
+body {background-color:yellow}
+p {color:blue}
+</style>.
+为搜索引擎定义关键词:
+<meta name="keywords" content="HTML, CSS, XML, XHTML, JavaScript">
+为网页定义描述内容:
+<meta name="description" content="免费 Web & 编程 教程">
+定义网页作者:
+<meta name="author" content="Runoob">
+每30秒中刷新当前页面:
+<meta http-equiv="refresh" content="30">
+<script>标签用于加载脚本文件，如： JavaScript。
+
+CSS 可以通过以下方式添加到HTML中:
+内联样式- 在HTML元素中使用"style" 属性
+内部样式表 -在HTML文档头部 <head> 区域使用<style> 元素 来包含CSS
+外部引用 - 使用外部 CSS 文件，link
+
+定义图像的语法是：
+<img src="url" alt="some_text"width="304" height="228">
+URL 指存储图像的位置
+alt 属性用来为图像定义一串预备的可替换的文本，无法载入图时候用
+
+<map>	定义图像地图  <area>可点击
+<img src="planets.gif" width="145" height="126" alt="Planets" usemap="#planetmap">
+<map name="planetmap">
+  <area shape="rect" coords="0,0,82,126" alt="Sun" href="sun.htm">
+  <area shape="circle" coords="90,58,3" alt="Mercury" href="mercur.htm">
+  <area shape="circle" coords="124,58,8" alt="Venus" href="venus.htm">
+</map>
+
+表格由 <table> 标签来定义，<tr>一行，<tr>中的<td>一个单元格，表格的表头使用 <th> 标签进行定义。嵌套段落列表图等
+<table border="1"> 边框
+    <caption>Monthly savings</caption> 标的标题
+    <tr>
+        <th>Header 1</th>
+        <th colspan="2">Header 2</th> 跨两格单元格
+    </tr>
+    <tr>
+        <td>row 1, cell 1</td>
+        <td>row 1, cell 2</td>
+    </tr>
+    <tr>
+        <td>row 2, cell 1</td>
+        <td>row 2, cell 2</td>
+    </tr>
+</table>
+
+ul无序列表
+<ul>
+    <li>apples</li>
+    <li>bananas</li>
+    <li>pineapples</li>
+</ul>
+ol有序
+<ol start="50">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+
+自定义列表以 <dl> 标签开始。每个自定义列表项以 <dt> 开始。每个自定义列表项的定义以 <dd> 开始
+
+HTML <div> 元素是块级元素，它可用于组合其他 HTML 元素的容器。
+<div> 元素没有特定的含义。除此之外，由于它属于块级元素，浏览器会在其前后显示折行。
+如果与 CSS 一同使用，<div> 元素可用于对大的内容块设置样式属性。
+<div> 元素的另一个常见的用途是文档布局
+
+HTML <span> 元素是内联元素，可用作文本的容器
+<span> 元素也没有特定的含义。
+当与 CSS 一同使用时，<span> 元素可用于为部分文本设置样式属性。
+
+表单：
+输入类型是由类型属性（type）定义的。大多数经常被用到的输入类型如下：
+type="text""password""radio"单选"checkbox"多选"submit"
+<form>
+First name: <input type="text" name="firstname"><br>
+</form>
+下拉选框
+<form action="">
+<select name="cars">
+<option value="volvo">Volvo</option>
+<option value="saab">Saab</option>
+<option value="fiat">Fiat</option>
+<option value="audi">Audi</option>
+</select>
+</form>
+
+<textarea rows="10" cols="30">
+我是一个文本框。
+</textarea>
+
+使用框架，你可以在同一个浏览器窗口中显示不止一个页面。
+<iframe src="URL"></iframe>
+
+颜色：十六进制符号#000000， 216 种 Web 安全色
+
+JavaScript 最常用于图片操作、表单验证以及内容动态更新
+ <script> <noscript> 禁用脚本时显示
+
+速查表
+http://www.runoob.com/html/html-quicklist.html
+
+结合 XML 和 HTML 的长处，开发出了 XHTML。XHTML 是作为 XML 被重新设计的 HTML，不规范的HTML可以被识别但是XML很规范
