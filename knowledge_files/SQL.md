@@ -1,4 +1,4 @@
-#sql
+#sqll
 use database_name;
 set names utf8;
 
