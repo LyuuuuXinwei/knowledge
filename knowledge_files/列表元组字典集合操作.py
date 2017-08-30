@@ -40,6 +40,8 @@ set1.difference(set2)
 
 dict的值可以是任何数据类型
 
+d = dict([('a', 1), ('b', 2), ('c', 3)]) d变为：{'a': 1, 'c': 3, 'b': 2}
+
 dict.items()返回键值元组组成的列表
 d={'1':'a','2':'b','3':'c'}
 d.items()
@@ -52,3 +54,9 @@ dict=dict(a)
 {'password': 'PapayaWhip', 'user': 'pilgrim', 'database': 'master'}
 
 list-of-lists
+
+zip()用法：多个列表结合
+l=[1,12,123,1234,12345]
+print([{}]*5) #[{}, {}, {}, {}, {}]
+print([2,3]*5) #[2, 3, 2, 3, 2, 3, 2, 3, 2, 3]
+print(dict(zip(l,[{}]*len(l)))) #{1: {}, 1234: {}, 123: {}, 12: {}, 12345: {}}
