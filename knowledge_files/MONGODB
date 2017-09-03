@@ -1,0 +1,171 @@
+MongoDB 是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的
+
+为什么使用NoSQL ?
+今天我们可以通过第三方平台（如：Google,Facebook等）可以很容易的访问和抓取数据。
+用户的个人信息，社交网络，地理位置，用户生成的数据和用户操作日志已经成倍的增加。
+我们如果要对这些用户数据进行挖掘，那SQL数据库已经不适合这些应用了, NoSQL数据库的发展也却能很好的处理这些大的数据。
+
+MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。
+文档的数据结构和JSON基本一样。
+所有存储在集合中的数据都是BSON格式。
+
+SQL术语/概念	MongoDB术语/概念	解释/说明
+database	database	数据库
+table	collection	数据库表/集合
+row	document	数据记录行/文档
+column	field	数据字段/域
+index	index	索引
+
+MongoDB的默认数据库为"db"，该数据库存储在data目录中
+
+文档是一组键值(key-value)对(即BSON)。MongoDB 的文档不需要设置相同的字段，并且相同的字段不需要相同的数据类型
+集合就是 MongoDB 文档组，类似于 RDBMS中的表格,当第一个文档插入时，集合就会被创建
+Capped collections 就是固定大小的collection,和标准的collection不同，你必须要显式的创建一个capped collection， 指定一个collection的大小，单位是字节
+：db.createCollection("mycoll", {capped:true, size:100000})
+
+MongoDB数据库中名字空间 <dbname>.system.* 是包含多种系统信息的特殊集合(Collection)
+
+mongodb shell（Linux）
+c:\MongoDB\Server\3.4\bin>mongo（windows链接）
+标准 URI 连接语法：
+mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+使用默认端口来连接 MongoDB 的服务：
+mongodb://localhost
+
+=================================================================================================================
+指令：
+"db" 命令可以显示当前数据库
+查看所有数据库，可以使用 show dbs，看集合show tables
+创建/切换：use DATABASE_NAME
+db.dropDatabase()删除当前数据库
+db.xxx.drop()删除集合xxx
+=============
+在集合中插入文档/直接创建集合：
+db.COLLECTION_NAME.insert(document)在集合中插入文档，例如：
+db.col.insert({title: 'MongoDB 教程',
+    description: 'MongoDB 是一个 Nosql 数据库',
+    by: '菜鸟教程',
+    url: 'http://www.runoob.com',
+    tags: ['mongodb', 'database', 'NoSQL'],
+    likes: 100
+})
+db.col.find()
+===============
+更新文档：
+db.collection.update(
+   <query>,
+   <update>,
+   {
+     {}，{$set:{}}
+     upsert: <boolean>,
+     multi: <boolean>,
+     writeConcern: <document>
+   }
+)
+例如db.col.update({'title':'MongoDB 教程'},{$set:{'title':'MongoDB'}})
+以上语句只会修改第一条发现的文档，如果你要修改多条相同的文档，则需要设置 multi 参数为 true
+
+save() 方法通过传入的文档来替换已有文档。语法格式如下：
+db.collection.save(
+   <document>,
+   {
+     writeConcern: <document>
+   }
+)
+============
+删除文档：
+db.collection.remove(
+   <query>,移除条件，例子：{"by":"菜鸟教程"}
+   {
+     justOne: <boolean>,
+     writeConcern: <document>
+   }
+)
+db.col.remove({})移除所有
+==================
+查询文档：
+db.collection.find(query, projection) 返回符合条件的整个文档
+db.col.find().pretty()
+pretty() 方法以格式化的方式来显示所有文档， findOne() 方法，它只返回一个文档
+查询条件：
+等于	{<key>:<value>}	db.col.find({"by":"菜鸟教程"}).pretty()	where by = '菜鸟教程'
+小于	{<key>:{$lt:<value>}}	db.col.find({"likes":{$lt:50}}).pretty()	where likes < 50
+小于或等于	{<key>:{$lte:<value>}}	db.col.find({"likes":{$lte:50}}).pretty()	where likes <= 50
+大于	{<key>:{$gt:<value>}}	db.col.find({"likes":{$gt:50}}).pretty()	where likes > 50
+大于或等于	{<key>:{$gte:<value>}}	db.col.find({"likes":{$gte:50}}).pretty()	where likes >= 50
+不等于	{<key>:{$ne:<value>}}
+条件AND:
+db.col.find({key1:value1, key2:value2}).pretty()
+条件OR:
+db.col.find({$or:[{"by":"菜鸟教程"},{"title": "MongoDB 教程"}]}).pretty()
+
+db.col.find({"title" : {$type : 2}}) $type:每个类型对应一个数字，寻找包含某个类型的，2：string，
+db.col.find({},{"title":1,_id:0}).limit(2) 前两条文档
+db.col.find({},{"title":1,_id:0}).limit(1).skip(1) 跳过前一条文档
+db.COLLECTION_NAME.find().skip(10).limit(100) skip 和 limit 结合就能实现分页。
+
+db.col.find({},{"title":1,_id:0}).limit(2)
+第一个 {} 放 where 条件，为空表示返回集合中所有文档。
+第二个 {} 指定那些列显示和不显示 （0表示不显示 1表示显示)
+==========================
+排序：
+db.col.find({},{"title":1,_id:0}).sort({"likes":-1})  1 为升序排列，而-1是用于降序排列
+=====================
+索引：
+db.col.ensureIndex({open: 1, close: 1}, {background: true}) 1为指定按升序创建索引,复合索引 后面是可选参数
+=========================
+聚合：
+db.col.aggregate([{$group : {_id : "$by_user", num_tutorial : {$sum : 1}}}]) 注意括号结构
+通过字段by_user字段对数据进行分组，并计算by_user字段相同值的总和，$avg$max$min
+生成：
+{
+   "result" : [
+      {
+         "_id" : "runoob.com",
+         "num_tutorial" : 2
+      },
+      {
+         "_id" : "Neo4j",
+         "num_tutorial" : 1
+      }
+   ],
+   "ok" : 1
+}
+$group是聚合管道，还有：
+db.article.aggregate(
+    { $project : {
+        title : 1 ,
+        author : 1 ,
+    }}
+ );
+ 这样的话结果中就只还有_id,tilte和author三个字段了，修改输入文档的结构。可以用来重命名、增加或删除域，也可以用于创建计算结果以及嵌套文档
+ db.articles.aggregate( [
+                        { $match : { score : { $gt : 70, $lte : 90 } } },
+                        { $group: { _id: null, count: { $sum: 1 } } }
+                       ] );
+$match用于获取分数大于70小于或等于90记录，然后将符合条件的记录送到下一阶段$group管道操作符进行处理。
+db.article.aggregate(
+    { $skip : 5 });
+经过$skip管道操作符处理后，前五个文档被"跳过。
+=================================
+MongoDB复制是将数据同步在多个服务器，冗余备份
+mongodb的复制至少需要两个节点。其中一个是主节点，负责处理客户端请求，其余的都是从节点
+主节点记录在其上的所有操作oplog，从节点定期轮询主节点获取这些操作，然后对自己的数据副本执行这些操作，从而保证从节点的数据与主节点一致。
+==================================
+分片技术,可以满足MongoDB数据量大量增长的需求，一台机器可能不足以存储数据，也可能不足以提供可接受的读写吞吐量。这时，我们就可以通过在多台机器上分割数据，使得数据库系统能存储和处理更多的数据
+分片集群三部分：
+Shard:
+用于存储实际的数据块，实际生产环境中一个shard server角色可由几台机器组个一个replica set承担，防止主机单点故障 2+
+Config Server:
+mongod实例，存储了整个 ClusterMetadata，其中包括 chunk信息。3
+Query Routers:
+前端路由，客户端由此接入，且让整个集群看上去像单一数据库，前端应用可以透明使用。2+
+==================================
+备份：
+mongodump -h dbhost -d dbname -o dbdirectory
+恢复：
+mongorestore -h <hostname><:port> -d dbname <path>
+==============================
+监控：安装部署并允许MongoDB服务后，你必须要了解MongoDB的运行情况，并查看MongoDB的性能
+D:\set up\mongodb\bin>mongostat 间隔固定时间获取mongodb的当前运行状态，并输出
+D:\set up\mongodb\bin>mongotop 跟踪一个MongoDB的实例，查看哪些大量的时间花费在读取和写入数据。 mongotop提供每个集合的水平的统计数据

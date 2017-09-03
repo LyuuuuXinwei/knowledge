@@ -1,0 +1,8 @@
+快速开发 Web 应用程序和网站的前端框架
+
+包含了 jquery.js、bootstrap.min.js 和 bootstrap.min.css 文件，用于让一个常规的 HTML 文件变为使用了 Bootstrap 的模板
+Bootstrap 的 JavaScript 插件需要引入 jQuery
+
+BootCDN 提供的免费 CDN 加速服务
+
+Bootstrap 包含了一个响应式的、移动设备优先的、不固定的网格系统，可以随着设备或视口大小的增加而适当地扩展到 12 列。
