@@ -1,0 +1,75 @@
+np数组同类型，不自动说明则自动判断，没有特别指定，float64
+数组：即ndarray
+
+arr=np.array(list,dtype=) 创建数组 list等长嵌套
+arr.ndim 行数
+arr.dtype 类型
+arr.shape （m,n）m为行，n为列
+arr.astype(np.float64) 如果写float会自动选择等价的dtype 显式的转换dtype dtype还有string_
+arr.astype(arr2.dtype) detype有简洁代码
+
+np.zeros/ones(m,n)/(n) 还有(m,n,o) 在m个list中嵌入n个有o个元素的list
+np.empty() 垃圾
+np.arange(n) range数组版
+
+大小相同的 ndarray 的运算都是基于元素的，大小不同的运算叫做广播
+ndarray可以像list一样索引和切片，跟list不同的是切片是原始数组的视图，所做更改会影响原始ndarray,要得到复制的话需要arr[5:8].copy()
+高维ndarray的索引会索引出低一个维度的ndarray arr[1][2]层层索引得到元素
+arr[:2,1:]前面的：2意思不变，后面的1：是按照列来切片的，去掉每个下层ndarray的第一个元素（这第一个元素有可能是再下一层的ndarray）
+arr[2]即arr[2,:]
+对切片表达式的赋值会广播到整个选区
+
+numpy.random.randn data=randn(m,n)生成正态分布的随机数据
+
+生成布尔ndarray：
+names=='bob' （比较运算是元素级的）返回一维布尔类型的ndarray
+使用布尔ndarray索引：
+data[names=='bob']使用反悔的布尔ndarray索引二维数组data，其中布尔ndarray的长度和data的轴长度一样
+布尔索引和切片/数字索引可以混用，布尔后面的索引是对下一层的，布尔对行，后面对列的
+比较运算还有：!=/-(names='bob') 负号否定
+组合的比较运算：musk=(names='bob')|(names='will') |&（不能用and or）
+布尔型的选取则会创建ndarray的副本
+常用在通过布尔数组赋值：data[data<0]=0 比较运算的左边是ndarray，但是元素级的比较
+
+花式索引
+布尔可以选择一个二维数组的特定行，花式索引利用一个整数数组可以以特定顺序选择特定行
+arr为一个（m,n）大小的二维数组，执行arr[[4,3,0,6]]的意思是，索引arr的0,3,4,6行并按照4,3,0,6的顺序排列 arr[[-3,-5,-7]]倒数第3,5,7行
+注意两层[]若是一层则是上文的索引方式了
+arr[[1,5,7,2],[0,3,1,2]]则是在列索引后用[0,3,1,2]为行索引，最后会合并生成一个一维ndarray，相当于(1,0)(5,3)(7,1)(2,2)位置的四个数字组成的ndarray
+如果希望行不选择元素而是以某种索引选取排列为方形元素，则需要：
+1.arr[[1,5,7,2]] [:,[0,3,1,2]]注意括号，这是先选列再选行，两个括号括起来分离的两步
+2.arr[np.ix_([1,5,7,2],[0,3,1,2])]
+花式索引像布尔索引，会复制，切片不会
+
+arr=np.arange(15).reshape((3,5))重塑
+arr.T转置 不复制的操作，二维数组行列互换 矩阵transpose
+高维数组需要得到一个由轴编号组成的元组：arr.transpose((1,0,2))
+np.dot(arr.T,arr)计算矩阵内积
+
+====================================================================================================
+
+[通用函数：ufunc] --元素级
+一元：用于一个ndarray，abs/fabs/sqrt(开方)/square/exp(e^x)/sign(正负计算)/modf(整数部分和小数部分分为独立两个数组)……
+二元：add/substract/multiply/divide/floor_devide（整除不要余数）/power/maximum/minimum/mod(求余数)/greater/greater_equal/less/less_equal/equal/not_equal/logical_and/or/xor
+
+points=np.arange(-5,5,0.01)0.01是间隔单位，默认整数
+x,y=np,meshgrid(points,points)
+distance=np.sqrt(s**2+y**2)
+
+列表推导
+r=[(x if c else y) for x,y,c in zip(xarr,yarr,cond)]
+xarr,yarr为数字数组，cond为布尔数组，cond为TRUE选xarr
+np.where是以上的矢量化高级版本，可以用于多维数组,根据一种规则产生新数组：
+np.where(cond,xarr,yarr)
+where还有更复杂的逻辑：
+np.where(arr>0,1,-1)
+np.where(arr<0,0,arr)
+np.where(cond1&cond2,0,np.where(cond1,1,np.where(cond2,2,3)))
+
+统计方法：整个数组或某个轴向数据的统计函数，聚合计算
+arr.mean()
+arr.sum()
+arr.mean(axis=1)
+arr.sum(0)
+std(标准差)/var(方差)/min/max/argmin/argmax/
+cumsum(累积和)/sumprod(累积积) 返回中间结果组成的数组
