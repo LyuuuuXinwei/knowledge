@@ -1,0 +1,93 @@
+
+series和dataframe两张数据结构
+
+obj=Series([1,2,3])自动创建0-n的整数索引
+obj.values
+obj.index
+obj=Series([1,2,3],index=['a','b','c'])
+可以像定长有序字典一样obj['a']
+obj=Series(dict)直接通过Python字典创建
+obj=Series(dict,index=) 找出dict中能和index匹配的，不匹配的填NaN
+
+NaN missing/NA
+pd.isnull(obj)
+pd.notnull(obj)
+
+Series本身和其index可以有name属性
+obj.name=''
+obj.index.name=''
+
+dataframe 表格型，每一列可以是不同值类型，行列都有索引
+构造方式1：
+data={'state':[],'year':[],'pop':[]} 其中是等长列表或np数组
+frame=DataFrame(data) 一个数组是一列，key是列索引，自动加行索引
+frame=DataFrame(data,columns=[],index=[]) 为列排序，若columns的元素在data中没有则填入NaN
+frame.columns1/frame[columns2] 产生series
+frame.ix[index] 索引行，产生series
+可以用列表/数组/series为frame的一列赋值 frame[column]=series ，为不存在的列赋值会创造新列
+del frame[column]
+索引方式返回的是视图不是副本，所做更改会改原Datafreme
+构造方式2：
+嵌套字典：外层字典的key作为列索引，内层行
+frame=DataFrame(dict,index=[]) 显式指定index则会覆盖
+frame.T 行列对调
+其他构造方式：
+用series为value的字典构造，类似嵌套字典，series本身又可以从一个frame的索引获取
+二位ndarray传入行列标
+
+dataframe有index和column的name属性，类似series
+frame.values 返回二维ndarray形式的数据，数据类型
+
+
+索引
+index对象不可以改
+index=obj.index
+index=pd.Index(np.arange(3))
+'' in frame.columns/index true/false
+index的方法和属性:
+append/diff/intersection/union/……
+
+==============================================================================
+操作series和dataframe的基本功能
+
+重新索引：创建一个适应新索引的新对象
+obj2=obj.reindex([]) 不存在的索引值为NA
+obj2=obj.reindex([],fill_value=0) fill_value设置不存在的索引值
+obj.reindex(range(6),method='ffill')
+method专门处理填充不存在的索引值问题，ffill为前向值填充，不存在的填前一个存在的 bfill后向
+对于dataframe：
+frame2=frame.reindex([]) 针对行
+frame3=frame.reindex(columns=[]) 列
+frame3=frame.reindex(index=[],mehtod='',columns=[])
+frame.ix[[],[]] ix标签索引功能，[][]分别为行列
+
+丢弃：
+newobj=obj.drop('')/(['','']) 丢弃series的某行
+newframe=frame.drop(['column1','column2'],axis=1) 行丢弃相同，列丢弃
+
+索引，选取和过滤
+series的obj索引很灵活：
+obj['b']/obj[['a','b']] 按index
+obj[1]/obj[2:4]/obj[[1,2,3]] 按顺序
+obj[obj<3] 按值的范围
+frame的索引获取列
+frame['column']/frame[['column1','column2']] 列
+frame[1:3] 行切片
+frame[frame['column']>5] 布尔选行
+frame[frame<0]=0 类似ndarray为布尔TRUE赋值
+
+frame[val]选列
+frame.ix[val] 选行
+frame.ix[:,val] 选列
+frame.ix[val1,val2] 选行和列
+可以用行列索引也可以用顺序，至少列可以用顺序
+当选了单独一行后，好像会自动transpose ，变成series
+
+算术运算
+series的运算，对于相同索引的行，元素运算，不同索引行NA
+dataframe会在行列都像series一样，索引并集，索引交集非空 df1+df2
+如果用df1.add(df2,fill_value=0)则空值被填充 add/sub/div/mul
+dataframe和series之间的运算，
+匹配列：可以写作frame+obj,会将series的索引对应到dataframe的列标然后在每一行的dataframe上都广播下去，同上，新列标是并集，而非交集为NA
+匹配行：必须用算数运算方法frame.sub(obj,axis=0)来特殊指定匹配行
+
