@@ -73,3 +73,42 @@ arr.mean(axis=1)
 arr.sum(0)
 std(标准差)/var(方差)/min/max/argmin/argmax/
 cumsum(累积和)/sumprod(累积积) 返回中间结果组成的数组
+统计计算中的布尔数组强制转换为1,0
+bools.any()
+bools.all()
+上面还能用于非布尔数组非零元素被作为TRUE
+
+排序
+arr.sort(轴号) 由小到大，会修改数组本身
+
+数组的集合运算
+np.unique 针对一维数组，找唯一值并排序（有序集合）
+np.in1d(arr,[m,n,o]) 测试后面数组在前面数组的成员资格（包含），返回布尔数组
+
+数组文件:
+1.二进制格式.npy
+np.save('arr_name',arr)
+np.load('arr_name.npy')
+np.savez('arr_name.npz',a=arr1,b=arr2)
+np.load('arr_name.npz')['a']
+2.文本文件
+np.loadtxt('arr_name.txt',delimiter=',') 打开csv
+np.savetxt('arr_name.txt',delimiter=',') 指定分隔符
+
+线性代数
+np.dot(xarr,yarr) 矩阵点积
+form numpy.linalg import inv（求逆）,pr（qr分解），det（行列式）……
+
+随机函数
+np.random 略
+随机漫步：
+draws=np.random.randint(0,2,size=1000)
+steps=draws.where(draws>0,1,-1) 替换
+walk=steps.cumsum() 中间结果累积
+walk.min() 过程中偏离中心点的最小值
+walk.max() 最大
+np.abs(walk)>=10 返回布尔数组得到偏离中心点10步的位置
+(np.abs(walk)>=10).argmin 第一次偏离10步的位置
+5000个随机漫步过程：
+draws=np.random.randint(0,2,size=(5000,1000）)
+

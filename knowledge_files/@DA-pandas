@@ -91,3 +91,103 @@ dataframe和series之间的运算，
 匹配列：可以写作frame+obj,会将series的索引对应到dataframe的列标然后在每一行的dataframe上都广播下去，同上，新列标是并集，而非交集为NA
 匹配行：必须用算数运算方法frame.sub(obj,axis=0)来特殊指定匹配行
 
+函数应用
+numpy的ufunc（一元）可以用于frame：np.abs(frame)同样是元素级别
+函数应用于frame的行列关系：
+f=lambda x:max(x) - min(x)
+frame.apply(f) 将f函数应用于frame 的每一行，形成保留列索引的series，反之指定轴号 frame.apply(f，axis=1)
+def f(x):
+    return Series([max(x),min(x)],index=['max','min'])
+frame.apply(f)
+函数应用于元素级别：
+转换类型/格式化字符串的/等各种用途的func，统一改变每一个元素
+frame.applymap(func)
+对应的，用于series的是obj.map(func)
+
+排序和排名
+按索引排序，返回新对象：
+series：obj.sort_index()
+dataframe:frame.sort_index()按行标/frame.sort_index(axis=1) 列
+默认升序（ascending=False）
+按值：
+obj.order() 缺失放末尾
+dataframe中按一个或多个列值排序：
+frame.sort_index(by='column'/by=['column1','column2'])
+排名：
+
+
+带有重复值的索引
+obj.index.is_unique
+索引为重复，返回series/dataframe
+
+=======================================================================================
+汇总和计算描述统计
+np.nan 表示NA空值 NA被自动排除
+frame.sum()返回一个保留列索引的series （axis=1）行 所有统计计算默认聚合行保留列
+frame.mean(skipna=False) 会将至少有一个NA的行/列计算结果得NA
+frame.idxmax/idxmin() 返回达到最大小值的索引值
+frame.cumsum()
+frame.describe() 一次产生多个汇总统计，数值型和非数值型返回的汇总统计类型不同
+还有以下汇总统计方法：
+frame.count(非NA值数目)/argmin(索引位置)/idxmin(索引值)/median(中位数)/var/std/cummax(累积最大值)/cumprod（累积积）
+frame以行 为变化，以列为元素，计算列元素之间的相关系数和协方差：
+frame.corr()相关系数
+frame.cov() 协方差
+obj1.corr(obj2)
+obj1.cov(obj2)
+frame和另一个frame/obj计算，默认按列，axis=1改为行：
+frame.corrwith(obj/frame)
+
+唯一值，值计数和成员资格
+obj.unique() 去重然后变成ndarray了
+obj.value_counts() 计频率并排序
+pd.value_counts(obj.value,sort=False) 保持原索引顺序
+mask=obj.isin(['元素','元素']) 返回series的布尔类型
+obj[mask]返回被选择的成员
+frame的计数
+frame.apply(pd.value_counts).fillna(0) 返回 按照列聚合行，行索引变为所有元素的并集，值为次数 的dataframe
+
+===============================================
+处理缺失数据
+python内置的none值会被当做NA
+frame/obj.isnull()/notnull()返回布尔
+obj.dropna() 去掉空值 相当于obj[obj.notnull()]
+frame.dropna() 默认丢弃所有含有NA的行，只要有一个就丢 dropna(how='all') 只有全部NA才丢 axis=1
+frame.ix[:4,1] 和range不同，：4包括4
+frame.fillna({column1:1,column2:2})用字典为frame不同列填充空值
+fillna返回新对象，替换则：_=frame.fillna(0,inplace=True)
+frame.fillna(method='ffill') fillna(frame.mean())
+
+==================================================
+层次化索引
+obj=Series(vlues,index=[[],[]])两个index
+obj['b'] /['b':'c']/['c','d']索引出下一层series
+obj[:,2]内层索引
+一个两层索引的series可以obj.unstack() 变成dataframe obj==obj.unstack().stack() stack()把dataframe转为series
+对于dataframe，行列都可以有分层索引
+每层索引都有names 属性：frame.index.names=['',''] frame.columns.names=[]
+
+分级索引交换级别
+frame.swaplevel('key1','key2') 执行后变为key2在外
+交换级别之后往往会重新排序
+frame.swaplevel(0,1).sortlevel(0)除了用索引名交换还可以用层次编号，最外层为0 默认行，axis=1选列
+
+根据级别汇总统计
+对于series和dataframe的汇总统计方法/函数许多都有level参数指定级别：
+frame.sum(level='key2') 默认行，列： frame.sum(level='color',axis=1)
+本质利用了pandas的groupby
+range(7):0到6
+range(7,0,-1):7到1
+将dataframe的某一/几列变为行的索引：
+frame2=frame.set_index(['column1','column2']) 1在外2在内，同时列不保存（drop=False）则保存
+相反，将索引变为列：
+frame2.reset_index()
+
+================================================
+其他
+整数索引不好，基于标签或者位置计算机推断不出，所以规定若果轴索引有索引器，总是面对标签
+如果希望是基于位置的索引：
+obj.iget_value()
+frame.irow()/icol()
+三维版的dataframe：panel 可由三维ndarray创建，少见
+
