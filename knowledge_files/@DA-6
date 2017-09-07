@@ -1,0 +1,88 @@
+文本格式数据读写
+read_csv 从文件，url，文件型对象加载带分隔符的数据，默认分隔符为逗号
+read_table 从文件，url，文件型对象加载带分隔符的数据，默认分隔符为制表符\t
+frame=pd.read_csv('')第一行默认为列索引
+frame=pd.read_csv(''，header=None)/frame=pd.read_csv('',names=[])自动列索引或手动设置索引
+frame=pd.read_csv('',index_col='')将文件中一列变为行索引
+非逗号分隔的文件：
+frame=read_table('',sep='re')re是正则表达式 '\s+'匹配任意数量空白符：空格和换行
+frame=pd.read_csv('',skiprows=[])
+
+缺失值处理
+frame=pd.read_csv('',na_values=['NULL'])
+frame=pd.read_csv('',na_values={'column1':[],'column2':''})指定用于替换NA的值
+还有许多别的参数
+
+遇到大文件逐块读取
+frame=pd.read_csv('',nrows=10)
+frame=pd.read_csv('',chunksize=1000) 返回textparser对象 1000行 get_chunk读取
+
+写入
+frame.to_csv('')
+frame.to_csv(sys.stdout,sep='|') 仅仅打印
+NA会被输出为NULL空字符串
+frame.to_csv(sys.stdout,na_rep='')
+frame.to_csv(sys.stdout,index=False,header=False)不输出索引
+frame.to_csv(sys.stdout,cols=[],rows=[]) 输出特定行列
+
+series有更加方便的读取方法
+obj.from_csv()写入同上
+
+借助csv的Python库处理不规范的文件
+data=csv.reader(open(''))
+通过将数组整理成dict
+csv.reader接受关键字参数：
+diaect=my_diaect
+class my_diaect(csv.Diaect):
+    lineterminator='\n'
+    delimiter=';'
+    quotechar='""'
+
+添加进csv
+with open('','w')as f:
+writer=csv.writer(f)
+writer.writerow([])
+
+JSON
+loads为dict然后自行构造dataframe
+
+
+用bs4和urllib和XPATH找到网页中的表格并解析 tr th td get_text 整理成dict/list 转换为frame
+所有数字仍然是字符串格式，TextParser自动类型转换
+from pandas.io.parsers import TextParser
+frame=TextParser(list/dict).getchunk()
+
+xml用lxml库，暂时忽略
+
+实现二进制数据存储的方法之一：pickle序列化
+pandas对象都有一个将数据以pickle形式保存至磁盘的save方法：
+frame.save('')
+frame=pd.load('')读回
+=============
+HDF5格式
+PyTables / h5py
+
+Excel
+xlrd和openpyxl包安装导入
+xls_files=pd.ExcelFile('.xls')
+frame=xls_file.parse('')
+======================
+html和web api
+resp=requests.get(url) 许多web API返回的是json，正常的url是返回html
+data=json.loads(resp.text)
+data['results'] 往往有可以提炼的数据？还是只是Twitter的API？
+===================
+数据库
+cursor=con.execute('SELECT * FROM table')
+data=cursor.fetchall()
+data :元组列表[(),(),()]
+col=cursor.description
+frame=DataFrame(data,columns=zip(*col)[0])
+pandas简化以上操作的函数：
+import pandas.io.sql as sql
+sql.read_frame('SELECT * FROM table',con)
+
+mongodb:
+import pymongo 驱动
+con=pymongo.Connection('localhost',port='27017') 链接
+
