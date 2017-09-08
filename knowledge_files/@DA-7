@@ -1,0 +1,121 @@
+大部分时间-数据准备
+
+合并数据集
+数据库风格的合并
+pd.merge(frame1,frame2，on='key')默认将列索引同名的列作为键,on指定键
+merge 默认保留键列的交集，inner连接
+没有同名列：left_on,right_on
+how='outer'/'left'/'right'
+笛卡尔积相连：左边frame3个b右边frame两个b一共6个
+在多个键上合并可以理解为将多个键形成的元组当做单个键
+没有被合并的重复列名会被自动在后面加_x_y merge时 suffixes=('_left','_right')自定义
+
+索引上的合并
+以上的连接键在列中，有的在索引中
+一边的键在索引中：
+pd.merge(df1,df2,left_on='key1',right_index=True)左边列为键，右边df2以索引为键
+对于层次化索引：
+pd.merge(df1,df2,left_on=['key1'.'key2'],right_index=True) 索引几层对应几个键
+两边的键都在索引中：
+pd.merge(df1,df2,left_index=True,right_index=True)
+专门针对索引合并的join方法：
+df1.join(df2,how='')
+df1.join([df2,df3,……]) 多个
+
+轴向连接
+series：
+pd.concat([obj1,obj2,obj3]) 黏连三个没有重复索引的series
+axis=0是默认 join='outer'并集是默认
+pd.concat([obj1,obj2,obj3],keys=['1','2','3']) 为黏连者创建外层的层次化索引
+pd.concat([obj1,obj2,obj3],axis=1,keys=['1','2','3']) series变dataframe，1,2,3为列索引
+dataframe：
+类似series，并集操作
+pd.concat([df1,df2],keys=['1','2'])keys默认创建在行axis=1变列
+如果行索引是无含义的行标：
+pd.concat([df1,df2],ignore_index=True)
+
+合并重叠数据
+部分替换：
+np.where(pd.isnull(a),b,a) ba在条件满足的地方填充b的元素在其他地方保留a
+series和dataframe的combine_first函数：
+df1.combine_first(df2) 用参数对象的数据为调用者df1打补丁，但是行列最终是保留并集的，不是df1的
+
+==============================================================================================
+重塑和轴向旋转（重新排列表格型数据）
+重塑层次化索引
+stack:列索引转行 frame->层次化series
+unstack:行转列 obj.unstack()默认转内层  obj.unstack(0)转外层  obj.unstack('index_name')
+unstack操作可能会引入NA，stack自动过滤NA，也可以dropna=False，所以可逆
+都默认转入最低级别
+
+长格式转宽格式
+长格式就是一条条添加的那种，能转的长格式得是两层索引的series，stacked data堆叠
+frame=data.pivot('arg1','arg2','arg3')arg1将作为行索引，2列，3值
+如果有arg4则列索引会分两层，一层arg3一层4
+pivot本质：data.set_index(['arg1','arg2']).unstack('arg2'）
+
+数据转换（过滤清理）
+移除重复数据
+obj/frame.duplicated() 返回布尔TRUE重复
+obj/frame.drop_duplicates()
+默认判断全部列，（[]）指定列
+
+根据函数或映射进行数据转换（对值的转换）
+series的map方法接受一个函数或含有映射关系的字典，是实现元素级转换和数据规整/清理的神器
+fram['new_column']=frame['column'].map(str.lower).map(dict)
+data.replace('','')/([],[])/({}) 相当于fillna 查找替换元素
+轴标签也有map方法：
+data.index=data.index.map(str.upper) 原数据更改
+_=data.rename(index=str.littlr/{'index1':''},columns=str.upper/{'column1':'new_name'},inplace=True)
+
+离散化和面元划分
+数据离散化/分组划分分析如年龄层，面元bin
+bins=[18,25,35,60,100] 连续数据分区间
+cats=pd.cut(data,bins,right=False) 右侧非闭端，默认(]左开又闭
+cats.labels 将元素值变为区间面原名，默认0,1,2
+cats.index 返回面元
+pd.value_counts(cats) 统计区间元素数
+group_names=[]
+cats=pd.cut(data,bins,labels=group_names) 自定义面元名
+pd.cut(data,n)自动分成n份等长面元
+pd.qcut(data,n)自动分成n份等量不定长面元 value_counts一样
+
+监测过滤异常值
+data['column'][np.abs(data['column'])>3] 寻找偏离要求的异常值
+data[(np.abs(data)>3).any(1)] 寻找偏离要求的异常行 any
+用=赋值
+
+排列和随机采样
+sampler=numpy.random.permutation(n) N为行数，生成随机排序的行号 sampler是个np数组
+frame.take(sampler) 以随机排序的行号随机排列
+frame.take(numpy.random.remutation(len(frame))[:n]) 随机采样n个
+
+计算指标/哑变量
+pd.get_dummies(frame['key']) 某列的指标矩阵，这一列往往只有几种值，1,0
+================================================================================================
+字符串操作
+复习一下Python自己的字符串操作
+data=[x.strip() for x in val.split(',')]
+'::'.join(data)
+data.find('')
+'' in data
+data.count('')
+data.replace('','')
+regex:
+re的三大类函数：匹配，拆分，替换
+regex=re.compile('\s+')
+re.split(regex,text) / regex.split(text) 以匹配部分为【分割】来拆分
+regex.match('').groups() 以匹配部分为【分组】来拆分，要求regex用（）分组,且match内已经保证是可以匹配的数据格式了
+regex.findall(text) 匹配-全
+regex.search(text) 匹配-第一个
+regex.sub('new_text',text) 替换匹配到的为新内容
+
+pandas中矢量化的字符串函数
+有NA时许多操作字符串的函数就会报错，series的str属性有很多可以跳过NA操作字符串的方法：
+obj.str.contains('string')
+obj.str.findall('regex without compiling',flags=re.IGNORECASE) 矢量化地匹配内部元素
+matches=obj.str.match('regex without compiling',flags=re.IGNORECASE) matches是匹配分组后的新series，元素是tuple
+matches.str.get（1） get每个tuple第二项 返回series
+
+=====================================================================
+

@@ -1,0 +1,91 @@
+数据聚合和分组运算
+
+groupby
+grouped_data=frame['data'].groupby(frame['key']['key2']) grouped_data是GroupBy对象 key层次化分组聚合为双层series
+key可以是任何长度一样的ndarray，可以理解为临时先新加了几列进去然后同上
+key还可以是索引，传入索引名 层次化索引level=''
+key还可以是字典，长度超过会自动裁掉
+key还可以是series，字典式的，key索引，value值
+frame.groupby() 非Key列都会被聚合，非数值列在使用一些统计函数时会被除去
+grouped_data.mean()
+grouped_data.size()
+grouped_data.count()
+默认行聚合
+
+对分组迭代
+for a,b in frame.groupby('key'): key就两类数据
+    frame_a=a
+    frame_b=b
+分表
+pieces=dict(list(frame.groupby('key')))
+pieces['a']
+同上frame_a 像字典一样分表
+grouped=frame.groupby(frame.dtypes,axis=1)
+按类型
+
+选取一个或一组列
+frame['data'].groupby(frame['key']) 简写：frame.groupby('key')['data']
+大数据集往往经常只需要对部分列聚合
+
+通过函数分组
+frame.groupby(len).sum() 按照行索引的字符串长度分组
+
+以上所有分组方式都可以组合使用
+==================================================================================================
+
+数据聚合
+使用自己编写的聚合函数：
+grouped=df.groupby('')
+def f(arr):
+    return arr.max()-arr.min()
+grouped.agg(my_func) agg('mean')
+grouped.describe() 返回一堆标准函数
+
+面向列的多函数应用
+grouped.agg([('name1','mean'),('name2',my_func)]) 重命名多函数
+多函数应用于多列，则形成列名在外，函数在内的层次列索引：
+g=frame.groupby('key')['data1','data2']
+g.agg([])
+如果对不同列应用不同的函数：
+g=frame.groupby('key')
+g.agg({'data1':['func1','func2'],'data2':'func2'})传字典
+
+以无索引形式返回聚合数据
+g=frame.groupby('key',as_index=False) 变索引的列不动
+
+==================================================================================================
+分组级运算和转换
+agg是数据转换的一种，还有其他的
+frame.groupby('key').transform('func')
+可以理解为将分组聚合后的函数填回原数据位置中，也可以理解为为原数据中的值分组化地使用某个函数
+
+aplly:一般性的拆分-应用-合并
+对完整frame使用一个函数：
+def f(frame):
+f(frame)
+
+对frame的groupby对象apply一个函数，这个函数的参数不是上面的arr，是frame
+frame.groupby('').apply(f)
+
+frame.groupby('')[].describe()的本质：
+f=lambda x: x.describe()
+frame.groupby('')[].apply(f)
+
+frame.groupby('',group_keys=False).apply(f) 索引回到列
+
+分数位和桶分析
+可以理解为用cut和qcut的分段而不是现成的一个列来分组，相当于先加了个cut过的分段列，然后分组
+factor=pd.cut(frame.column1,n) 长度相同的桶，想得到大小相等的桶就用qcut
+grouped=frame.column2.groupby(factor) factor是key
+grouped.apply(my_func)
+
+示例：用特定于分组的值填充缺失值
+用数据集衍生值填充缺失值：
+obj/frame.fillna(obj.mean())
+不同分组填不同的值：用fillna构造函数传给apply
+简写一些索引的做法：key=['']*4+['']*3
+用分组平均值填充NA：
+fill_mean=lambda x: x.fillna(x.mean())
+frame.groupby('key').apply(fill_mean)
+
+示例：随机采样和排列
