@@ -191,3 +191,6 @@ obj.iget_value()
 frame.irow()/icol()
 三维版的dataframe：panel 可由三维ndarray创建，少见
 
+构造结构化索引的一种方式：
+columns=pd.MultiIndex.from_arrays([[1,1,1,2,2],[1,3,5,1,3]],names=['outer','inner'])
+df=DataFrame(data,columns=columns)
