@@ -89,3 +89,52 @@ fill_mean=lambda x: x.fillna(x.mean())
 frame.groupby('key').apply(fill_mean)
 
 示例：随机采样和排列
+def take(obj,n=5):
+    return obj.take(np.random.permutation(len(obj))[:n])
+take(obj)
+随机排列取前N：完全随机打乱
+如果想要分组抽样：
+condition=lambda x:x[-1] 扑克牌例子，索引的最后一位是花色
+obj.groupby(condition).apply(obj,n=2)
+
+示例：分组加权平均数和相关系数
+dataframe列与列，两个series之间的运算，如加权平均
+grouped=df.groupby('category')
+get_wavg=lambda x: np.average(x['data'],weights=x['weights'])
+grouped.apply(get_wavg)
+grouped.appply(lambda x:x['col1'].corr(x['cor2']))
+
+示例：面向分组的线性回归
+import statsmodels.api as sm 统计类的函数包
+
+====================================================================================================
+透视表和交叉表
+frame.pivot_table([1col1','col2'],rows=['分组索引1','分组索引2'],cols='列的分组索引',margins=True,aggfunc=len/count,fill_value=0)
+pivot_table的默认聚合类型是分组平均数，aggfunc=len/count/sum
+margins=True分项小计
+fill_value=0空的组合NA
+交叉表：计算分组频率的特殊透视表
+pd.crosstab([frame.col1,frame.col],frame.col2,margins=True)
+必传参数1是将来的行标，2是列标
+
+==============================
+例子，选举
+
+为相似表述内容的元素做归并
+f=lambda x:reflection_dict.get(x,x) reflection_dict是归并字典，如果x不存在则返回x本身
+frame.col=frame.col.map(f) map 元素级别的用法 ，新行赋值
+
+清洗掉不满足要求的行
+frame=frame[frame.col>0,frame.col2<1000]
+
+为大数据集准备子集
+fra=frame[frame.col.isin(['',''])]为正态八成的数据建立子集
+
+基于一个列创建新列
+frame[new_col]=frame.col.map(f) f可以是个字典
+
+from mpl_toolkits.basemap import Basemap,cm
+from matplotlib import rcParams
+from matplotlib.collections import LineCollection
+from shapelib import ShapeFile
+import dbflib

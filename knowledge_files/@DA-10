@@ -1,0 +1,101 @@
+时间序列
+
+时间戳timestamp
+固定时期period
+时间间隔internal
+from datetime import datetime
+now=datetime.now() 返回tuple
+now.year/month/day
+datetime+-datetime是datetime.timedelta
+
+str(datetime())
+datetime().strftime('')
+from dateutil.parser import parse
+parse('') 传入任意格式事件得到datetime
+pd.to_datetime('') pandas str to datetime
+naT pd时间戳NA值
+
+=======================================
+时间序列基础
+索引是datetime对象，放在datetimeIndex中，datetimeIndex中的标量值是pd的timestamp对象，series变timeseries（series子类）
+timestamp对象和datetime对象可以自动转换
+
+索引
+obj['']传入一个可被parse的字符串就可以
+对于较长的时间序列，传入年，年月轻松切片 obj['2000']
+用不存在与时间戳中的时间切片 obj['':'']
+df同上
+
+带有重复索引的时间序列 多数据落在同一时间点
+obj.index.is_unique
+对非唯一时间戳行的聚合
+grouped=obj.groupby(level=0)
+
+============================================
+日期的范围频率和移动
+转换为固定频率的时间序列：
+obj.resample('D') D-每日
+pd.date_range('','') start= end= period= 默认按天 生成指定长度的DatetimeIndex
+
+频率和日偏移量
+pd频率：基础频率+一个乘数 基础频率'M''D'
+每个基础频率都有一个日期偏移量对应
+pd.date_range('','',freq='4h') 频率字符串'1h10min' 查着写
+wom实用的频率类 freq='WOM-3FRI'week of month 每月第三个星期五
+
+移动数据
+obj.shift(n)索引不变，数据整体下移n位
+obj.shift(n,freq='M')对时间戳整体位移 全部提前一天等
+
+===============================================
+时区处理
+import pytz
+略
+
+===============================================
+时期及其算数运算
+Period类表示时期这种数据类型
+p=pd.Period(2007,frq='') 整段时间
+p+5 向后平移5年
+p=pd.period_range('','',freq='') 创建规则的时期范围
+Series([],index=p) p传入PeriodIndex
+index=pd.PeriodIndex([])
+
+时期的频率转换
+p=pd.Period(2007,frq='A-DEC') 同时PeriodIndex和TimeSeries都可转
+p.asfreq('M',how='start')
+
+将timestamp转换为period
+obj.to_period() 将时间戳做索引的series转为period，频率默认从时间戳推断
+obj.to_period('m')自己设频率
+obj.to_timestamp(how='end')
+
+通过数组创建PeriodIndex
+data=pd.read_csv()
+index=pd.PeriodIndex(year=data.year,quarter=data.quarter,freq='D-DEC')合并创建
+
+=========================================
+重采样及频率转换
+高频率-低频率：降采样
+低频率-高：升采样
+时间戳和时期都是以下方法：
+obj.resample('M/5min',how='mean/sum',kind='period')
+默认面元右侧包含 closed='left'左 聚合后按照右边界标记 label='left'
+金融领域how='ohlc' 四种聚合的df
+
+升采样会引入NA
+obj.resample('D',fill_method='ffill') 类似fillna,reindex
+
+==========================================
+时间序列绘图
+frame.plot()
+frame[''].plot()
+frame[''].ix['ts1','ts2']plot()
+
+========================================
+移动窗口函数
+pd.rolling_mean(frame[''],250).plot() 股价的250日均线
+pd.rolling_std(frame[],250,min_period=10) 250日每日回报标准差
+
+
+
