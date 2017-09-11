@@ -1,0 +1,7 @@
+经济金融数据应用
+
+数据规整
+数据对齐
+pandas自动对齐
+手工对齐：
+frame1.align(frame2,join='inner')返回两个frame的重索引版本

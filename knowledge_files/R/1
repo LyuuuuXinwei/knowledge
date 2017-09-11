@@ -1,0 +1,17 @@
+<-/->赋值号
+大小写敏感
+
+alt+ - 插入任务操作
+ctrl+shift+m 操纵器
+
+路径 /
+
+install_packages('')
+library('')
+
+help(package='')
+help(func)
+
+q()退出
+
+data 直接显示数据集的内容
