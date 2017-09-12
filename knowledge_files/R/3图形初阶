@@ -1,0 +1,98 @@
+使用图形
+
+图形通常用交互式风格绘制
+pdf('filename.pdf')
+
+attach(df)
+plot(col1,col2) 以col1,col2为x,y画散点
+abline(lm(col1~col2)) 拟合曲线
+title('')
+detach(df)
+
+dev.off()
+以上代码将图存入pdf
+还有png()/jpeg()/bmp() IDE
+其中plot散点hist()直方图boxplot()
+
+创建多个图形：
+dev.new()
+图形1创建语句
+dev.new()
+图形2
+
+=====================================
+图形参数自定义图形样式
+全局式的图形参数修改：
+> opar <- par(no.readonly = TRUE) 生成复制当前图形的一个可修改的图形参数设置
+> par(lty=2,pch=17) 设置参数，此时par可以任意多次调用
+> plot(dose,druga,type='b') 执行绘图语句
+> par(opar) 还原原始设置，否则在一次回话中一直存在
+局部：
+高级绘图函数plot/hist等有可选参数
+plot(dose,druga,type='b'，lty=2,pch=17)
+
+其中图形参数：
+lty 线条 1直线2虚线3点线
+pch 点符号 1空心圆20实心圆
+cex 符号大小 倍数
+lwd 线条宽度 倍数
+线条和点符号对应码现查
+
+颜色
+用颜色名称，16进制颜色值"#FFFFFF",RGB：col=rgb(1,2,255)，HSV指定
+col=图形色
+col.axis 轴颜色
+col.lab 周标签色
+fg 前景色
+bg 背景色
+
+文本
+cex 文本大小 倍数
+cex.axis
+cex.lab
+cex.main
+cex.sub
+font 字体样式 1常规2粗3斜
+font.axis
+font.lab
+……
+
+图形尺寸和边界
+pin=c(2,3) 图形宽高英寸
+mai=c(1,2,3,4) 图形下，左，上，右边界英寸
+
+为图形添加标题和坐标轴标签
+title(main='',sub='',xlab='',ylab='',col.main='')
+
+自定义坐标轴
+axis()
+需要禁用高级函数自带的
+opar<-par()
+plot(axes=FALSE)
+lines() 在上图添加线
+axis() 自定义轴
+mtext() 添加文本
+title() 添加标题
+par(opar)
+
+参考线
+abline(h=c(),v=c(),col=,lty=)
+
+图例
+legend('topleft',inset=1,title='',c('drugA','drugB'),lty=c(1,2),col=c('','')) 位置，偏移量，图例名，图例名，图例线型
+
+文本标注
+text()内部文本，比如数据点解释
+mtext() 四边界文本
+
+图形矩阵
+1
+attach(df)
+opar<-par(no.)
+par(mfrow=c(2,2)) mfrow
+plot按次序画入矩阵中
+par(opar)
+detach(df)
+2
+attach(df)
+layout(matrix(2,2))

@@ -1,0 +1,63 @@
+创建新变量或对原变量变换--用构造公式
+df$sum<-df$col1+df$col2
+推荐写法：transform
+df<-transform(df,sum=col1+col2,mean=(col2+col2)/2)
+
+变量重编码
+例如连续分数变离散ABC，连续变量变类别型变量--构造公式之逻辑运算
+df$newcol[df$col>=90]<- 'A'
+df$newcol[df$col<90 & df$col>=80]<- 'B'
+推荐写法：within
+df<- within(df,{
+            newcol<-NA
+            newcol[col>=90]<-'A'
+            newcol[]
+})
+
+缺失值
+检测：is.na(df/vector[]) 返回布尔
+在计算中排除缺失值：
+sum(df[],na.rm=TRUE)
+移除Df的有NA的行：
+newdf<-na.omit(df)
+
+日期值
+用格式规定的字符串转化为数值：
+dates<-as.Date(c('','',''),"%m/%d/%y") 默认格式：yyyy-mm-dd 自设格式
+转换日期格式：
+format(date,format='')
+日期转字符型变量：
+strdate<-character(date)
+
+类型转换函数
+判断/转换：
+is/as.character()
+is/as.numeric()
+is/as.data.frame()
+
+数据排序
+df$col<-df[order(df$col),] 注意逗号
+
+数据集的合并
+横向合并数据集：
+ndf<-merge(df1,df2,by=c('','')) inner join
+纵向合并：
+ndf<-rbind(df1,df2) 变量相同
+直接合并：
+ndf<-cbind(df1,df2)
+
+数据集取子集
+选列：
+ndf<- df[,c(6:8)] 取6-8列
+ndf<- df[,c('','',)] 按列名取
+paste() 剔除
+names(df) 获得df所有列名构成的向量
+col<-names(df)  %in% c('','') 匹配要剔除的列 返回布尔向量
+ndf<-df[!col] 选择非剔除
+选行：
+ndf<-df[1:3,]
+ndf<-df[which(df%col1=='m'&df$col2>n),] 注意逗号，which条件
+高级写法：
+ndf<-subset(df, col1>=20 & col2=='x', select=c(col1,col2,col3)) df,行条件，列
+
+随机抽样

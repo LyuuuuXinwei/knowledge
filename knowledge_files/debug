@@ -1,0 +1,6 @@
+logging:
+import logging
+logging.basicConfig(level=logging.INFO)
+debug/info/warning/error
+
+ipython的Debug

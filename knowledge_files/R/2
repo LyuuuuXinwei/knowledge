@@ -3,6 +3,7 @@
 行：观测 列：变量
 类别型变量（名义型+有序型）称为因子
 
+============================================================================================
 数据结构
 向量，矩阵，数组，数据框，列表
 
@@ -37,3 +38,91 @@ m[i,c(m,n)] 按位置
 df$col1
 attach(df) 加入R的搜索路径，col1直接用
 detach(df)
+with(df,{
+    plot(col1,col2)
+    summery()
+}) 内部不带df
+with内赋值是局部的<<-变全局
+在创建数据框时指定实例标识符：
+df<-data.frame(col1,col2,col3……row.names=col1)
+
+str(df)显示对象的结构
+summary(df)显示对象的统计概要
+
+因子：
+1名义型变量 无序
+2有序型变量 梯度有序
+3连续型变量 连续有序
+12叫因子
+newcol<-factor(col) 用整数形式存类别值（名义型）
+newcol<-factor(col,ordered=TRUE) 有序性 字符顺序看字母
+newcol<-factor(col,ordered=TRUE,levels=c('','','')) 自定字符顺序
+
+列表：
+一些对象的有序集合，对象可以是任意数据结构
+创建：l<-list(obj1,obj2)
+命名创建：l<-list(name1=obj1,name2=obj2,obj3)不同对象同名
+选择对象：
+l$name1
+l[["name1"]]
+l[[2]] 位置按对象
+
+============================================================================================
+数据的输入
+
+即时输入
+d<-data.frame(col1=numeric(0),col2=character(0))
+d<-edit(d)
+fix(d)
+
+从分隔符文本文件导入
+df<-read.table('a.csv',header=TRUE,sep=','row.names='')
+\t制表符分割 sep=' '空白符分割，包括制表符
+
+Excel
+1.最好存为csv
+2.xls格式用RODBC包
+3.xlsx格式用xlsx包
+
+XML：XML包
+
+SPSS
+存为csv
+Hmisc包
+df<-spss.get('.sav',)
+
+SAS
+存为csv
+Hmisc包
+df<-sas.get('.sav',)
+
+Stata
+library(foreign)
+df<-read.dta()
+
+netCDF
+
+HDF5
+hdf5包
+
+数据库
+ODBC接口
+ODBC驱动
+library(RODBC)
+conn<-odbcConnect('dbname',uid='',pwd='') 链接
+df<-sqlFetch(conn,dbtable) 读表到df
+output<-sqlQuery(conn,"SELECT……") 执行任意sql语句
+close(conn)
+============================================================================================
+
+数据集的标注
+描述性的标签和编码的实际意义标注
+df$col<-factor(df$col,levels=c(1,2),labels=c('male','female'))
+
+处理对象的实用函数
+str() 看对象结构
+head()看大数据集的开头几行
+tail()
+rm()
+newobj<-edit(obj)
+fix(obj)
