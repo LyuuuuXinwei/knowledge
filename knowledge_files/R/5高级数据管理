@@ -1,0 +1,96 @@
+数值和字符处理函数
+
+数值函数：
+abs()
+sqrt()
+ceiling()
+floor()
+trunc() 取整
+round(x,digits=n) 位数
+等
+
+统计函数：
+可选参数很多
+mean()
+mediant()
+sd()
+var() 方差
+range()
+sum()
+min()
+max()
+标准化：scale(df[])平均为0方差为1
+scale(df[])*m+n 平均n标准差m
+
+概率函数
+生成概率分布
+runif(n) 均匀分布
+rnorm(n) n个正态分布的数 随机
+1.随机数种子
+set.seed()
+2.生成多元正态数据
+mass包： mvrnorm()
+
+字符处理函数
+nchar() 计算字符数量
+substr(x,start,stop) 取子串
+grep(pattern,x,fixed=FALSE) 搜索模式 fixed=FALSE,pattern为正则，否则为str
+sub(pattern,replacement,x,fixed=FALSE) 替换模式 正则
+strsplit(x,split,fixed=) 分割模式
+paste('','',sep='') 连接
+toupper()
+tolower()
+
+其他函数
+pretty(x,n) 连续的x分为N+1个区间
+
+将函数应用于数据结构
+apply(df,1/2,func) 1按行用func 2按列
+
+将连续值离散化为几个等量区间：
+df$col<-quantile(df$col,c(.8,.6,.4,.2))在80%……分成五个区间
+
+df[,-1]不是倒着数的列，是丢弃第一列
+
+===================
+控制流
+基本概念：语句statement，条件cond,表达式expr,序列seq
+重复和循环：
+for (x in 1:10) print
+while (i>0) {print;i<-i-1}
+if () {} else {}
+ifelse(cond,sta,sta)
+switch(i,'a'='','b'='','c'='') 像字典
+statement基本要被{} cond()
+
+自己编写函数
+myfunc<-function(x,parametric=TRUE,print=TRUE){
+    if(){}
+    else{}
+    result<-list( = , = )
+    return(result)
+}
+书中例子：结果应当是一个含名称的列表的形式
+x是数据类型，后面是默认关键字参数
+调用：y<-myfunc(x)
+function(type='a'){
+    switch(type,
+    a=
+    b=
+    c=
+)}
+调用选择类型
+
+整合与重构
+转置：ndf<-t(df)
+聚合数据：
+aggdf<-aggregate(df,by=list(col1,col2),FUN=mean/sum……,na.rm=TRUE)
+其中by单个列也要list 单个分类聚合，多个分（）类聚合 直接会新添列
+reshape：
+融合：转为长格式
+library(reshape)
+mletdf<-melt(df,id=(c('col1','col2'))) id是标识符变量
+重铸：长格式转宽
+ndf<-cast(meltdf,formula,FUN)
+FUN可选，是聚合统计函数 formula是最后想要的结果 +和~没太看懂
+例子：cast(meltdf,id~variable,mean)

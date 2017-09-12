@@ -61,3 +61,9 @@ ndf<-df[which(df%col1=='m'&df$col2>n),] 注意逗号，which条件
 ndf<-subset(df, col1>=20 & col2=='x', select=c(col1,col2,col3)) df,行条件，列
 
 随机抽样
+ndf<-df[sample(1:nrow(df),n,replace=FALSE)] 范围，抽样数N，替换
+
+sqldf包
+ndf<-sqldf('') 用sql语句操作df
+
+
