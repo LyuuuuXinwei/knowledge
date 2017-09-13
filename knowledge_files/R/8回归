@@ -1,0 +1,42 @@
+用预测变量来预测响应变量
+拟合回归模型
+鉴别模型潜在问题
+变量选择问题
+一般性问题 模型在现实世界的表现
+相对重要性问题 预测变量的权重
+
+回归类型很多
+OLS最小二乘回归法，包括简单线性，多项式，多元线性回归
+llogistic回归，泊松回归
+
+1.判断影响因变量的自变量和他们的相对重要性，得到统计模型
+2.应用统计模型到新的现实问题中
+3.统计离群点往往有重大发现
+
+简单线性回归
+多项式回归
+多元线性回归
+
+ols回归
+myfit<-lm(Y~col1+col2,df) Y为预测
+summary(myfit)展示拟合模型的详细结果
+coefficients(myfit) 列出模型参数
+fitted(myfit) 列出预测值
+plot()+abline(myfit)
+多项式：
+myfit<-lm(Y~col1+I(col2^2),df) 二次项 高次类似
+多元：
+1.相关系数：
+cor(df)
+2.自变量与因变量之间的散点图矩阵：
+library(car)
+scatterplotMatrix(df,spread=FALSE)
+3.回归
+fit<-lm(col~col1+col2+col3,data=df)
+有交互项的
+fit<-lm(col~col1+col2+col3:col4,data=df)
+
+==================================================
+回归诊断
+标准方法
+plot(fit)

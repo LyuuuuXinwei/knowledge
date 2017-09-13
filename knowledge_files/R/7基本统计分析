@@ -1,0 +1,69 @@
+描述性统计分析
+方法很多：
+summery(df$col/[c(col1,col2)])
+可以得到一组常用统计分析，类似python describe
+aplly/sapply(df$col,FUN,options)
+可以自定义FUN，生成自己希望得到的统计项，options会被传递给FUN，常用来控制if
+Hmisc包的describe() 返回缺失值唯一值最大最小等
+describe(df$col)
+pastecs包 stat.desc(df$col)
+
+分组计算描述性统计量
+aggregate(df$,by=list(ncol=df$),func) func可以是mean/sum等
+只能返回单值，以下可返回多个统计量
+by(df$,df$factor，FUN) 第二项必须是因子或因子组成的列表，FUN可以自己编写，返回命名的多个统计项，如：
+func<-function(x)(c(mean=mean(x),sd=sd(x)))
+还有种方式：
+library(reshape)
+myfunc<-function(x)(c(mean=mean(x),sd=sd(x))) 设置需要的统计项
+mdf<-melt(df,measure.vars=c('',''),id.vars=c('co1','co2')) measure.vars 数值向量 id.vars 类型/分组向量
+cast(mdf,co1+co2+variable~.,myfunc) 用reshape分组
+
+=================================================
+频数表和列联表
+主要针对类别型变量
+生成频数表:
+一维：
+c<-with(df,table(col)) 统计频数
+prop.table(c)*100 变为比例
+二位：
+table(df$col1,df$col2) 行列
+还可以：
+mtable<-xtabs(~A+B,data=df) 等同
+margin.table(mtable,1/2) 边际频数
+addmargins(mtable) 添加边际和
+addmargins(prop.table(mtable)，2)
+还可以：
+gmodels的CrossTable() 略
+再多维也可以
+
+独立性检验
+1.卡方独立性检验
+mtable<-xtabs(~A+B,data=df) 二维列连表
+chisq.test(mtable)
+2.Fisher精确检验
+fisher.test(mtable)
+3.CMH卡方检验
+mantelhean.tast(mtable)
+返回p<0.01存在某种关系 p>0.05 无关系
+
+相关性检验
+vcd
+assocstats(mtable) 值越大越相关
+
+列连表转回原数据
+table2float<-function() 可以编写出一个函数 169页
+
+==============================
+相关
+相关系数……暂时用不到的感觉
+
+==============================
+t检验
+一般用于检验控制变量的两组的表现比较
+t.test(y~x/y1,y2,data=df)
+非独立的两组：
+t.test(y~x/y1,y2,paired=TRUE)
+
+======
+组间差异的比较

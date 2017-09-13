@@ -1,0 +1,45 @@
+条形图
+barplot(data,main='',xlab='',ylab='',horiz=TRUE)data是向量或矩阵
+如果类别型变量是因子，则可以直接plot
+barplot(df,main='',xlab='',ylab='',horiz=TRUE,col=c(),legend=rownames(df)) 堆砌条形图 df数据框
+barplot(df,main='',xlab='',ylab='',horiz=TRUE,col=c(),legend=rownames(df),beside=TRUE) 分组条形图
+barplot(df$col2,names.arg=df$col)
+对图形外观进行微调
+barplot(cex.names=0.8)具体参数第三章
+
+棘装图
+等高堆砌条形图
+spine(df,)后同上
+
+饼图
+pie(vector,labels=c(),main='',col=rainbow(length(labels)))
+library(plotrix)
+pie3D(vector,labels=c(),explode=)
+扇形图
+library(plotrix)
+fan.plot(vector,labels=c(),)
+
+直方图
+hist(df$col,breaks=n,freq=FALSE,col=,xlab=,main=)freq按照频率 break n段
+
+核密度图
+不叠加
+plot(density(df$col))
+ploygon
+叠加
+lines(density())
+多组
+sm.density.compare()
+
+箱线图
+连续型变量的分布
+boxplot(df$col,)
+多个箱线图比较
+boxplot(col1~col2,data=df,) 为类别型的col2的每个值生成一个数值型变量col1的箱线图
+
+小提琴图
+箱线图和核密度图的结合
+vioplot包 vioplot()
+
+点图
+docchart(df$col1,labels=) 数值向量,labels是数值的标签向量
