@@ -38,5 +38,56 @@ fit<-lm(col~col1+col2+col3:col4,data=df)
 
 ==================================================
 回归诊断
-标准方法
+残差值：真实值与预测值只差
+标准方法:
+看拟合诊断图，反馈，二次拟合
+par(mfrow=c(2,2))
 plot(fit)
+myfit<-lm(Y~col1+I(col2^2),df[-c(13,15),]) 剔除强影响点
+还有：
+car包的诊断函数
+正态性：
+library(car)
+fit<-lm()
+qqplot(fit,)参数略
+误差独立性：
+durbinWatsonTest(fit)
+线性
+crplot(fit) 非线性则需尝试log 多项式回归
+同方差性：
+ncvTeat(fit)
+spreadLevelPlot(fit)
+
+线性模型架设的综合诊断
+g<-gvlma(fit)
+summery(g)
+
+======================================================================
+观测异常值
+离群点
+car包检测：
+outlierTest(fit)
+高杠杆值点
+hat.plot(fit)自编函数
+强影响点
+绘制cook's D图形
+变量添加图
+avplots()
+
+改进措施
+1.删除离群点
+2.变量变换，开方log高次幂
+3.增删变量
+
+模型选择
+anova(fit1,fit2)比较两个回归模型
+AIC(fit1,fit2)
+逐步回归
+逐步添加变量/删除
+MASS包
+fit<-lm(col~col1,col2,col3,data=df)
+stepAIC(fit,direction='backward'/'forward')
+
+深层次分析
+交叉验证
+相符重要性
