@@ -12,8 +12,11 @@ np.zeros/ones(m,n)/(n) 还有(m,n,o) 在m个list中嵌入n个有o个元素的lis
 np.empty() 垃圾
 np.arange(n) range数组版
 
+============================
+数组和标量之间的运算
+
 大小相同的 ndarray 的运算都是基于元素的，大小不同的运算叫做广播
-ndarray可以像list一样索引和切片，跟list不同的是切片是原始数组的视图，所做更改会影响原始ndarray,要得到复制的话需要arr[5:8].copy()
+ndarray可以像list一样索引和切片，跟list不同的是切片是原始数组的视图，所做更改会影响原始ndarray,要得到复制的话需要arr[5:8].copy()，切片可赋值,赋值广播
 高维ndarray的索引会索引出低一个维度的ndarray arr[1][2]层层索引得到元素
 arr[:2,1:]前面的：2意思不变，后面的1：是按照列来切片的，去掉每个下层ndarray的第一个元素（这第一个元素有可能是再下一层的ndarray）
 arr[2]即arr[2,:]
@@ -21,21 +24,23 @@ arr[2]即arr[2,:]
 
 numpy.random.randn data=randn(m,n)生成正态分布的随机数据
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@布尔索引和布尔赋值，用m长的bool数组为m,n数组创建遮罩划重点@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 生成布尔ndarray：
-names=='bob' （比较运算是元素级的）返回一维布尔类型的ndarray
+names=='bob' （比较运算是元素级的）返回布尔类型的ndarray
 使用布尔ndarray索引：
-data[names=='bob']使用反悔的布尔ndarray索引二维数组data，其中布尔ndarray的长度和data的轴长度一样
+data[names=='bob',:2]使用反悔的布尔ndarray索引二维数组data，其中布尔ndarray的长度和data的行数一样
 布尔索引和切片/数字索引可以混用，布尔后面的索引是对下一层的，布尔对行，后面对列的
 比较运算还有：!=/-(names='bob') 负号否定
-组合的比较运算：musk=(names='bob')|(names='will') |&（不能用and or）
+组合的比较运算：musk=(names='bob')|(names='will') |&（不能用and or） data[musk]遮罩
 布尔型的选取则会创建ndarray的副本
 常用在通过布尔数组赋值：data[data<0]=0 比较运算的左边是ndarray，但是元素级的比较
 
+===================================
 花式索引
 布尔可以选择一个二维数组的特定行，花式索引利用一个整数数组可以以特定顺序选择特定行
 arr为一个（m,n）大小的二维数组，执行arr[[4,3,0,6]]的意思是，索引arr的0,3,4,6行并按照4,3,0,6的顺序排列 arr[[-3,-5,-7]]倒数第3,5,7行
 注意两层[]若是一层则是上文的索引方式了
-arr[[1,5,7,2],[0,3,1,2]]则是在列索引后用[0,3,1,2]为行索引，最后会合并生成一个一维ndarray，相当于(1,0)(5,3)(7,1)(2,2)位置的四个数字组成的ndarray
+arr[[1,5,7,2],[0,3,1,2]]则是在行索引后用[0,3,1,2]为列索引，最后会合并生成一个一维ndarray，相当于(1,0)(5,3)(7,1)(2,2)位置的四个数字组成的ndarray
 如果希望行不选择元素而是以某种索引选取排列为方形元素，则需要：
 1.arr[[1,5,7,2]] [:,[0,3,1,2]]注意括号，这是先选列再选行，两个括号括起来分离的两步
 2.arr[np.ix_([1,5,7,2],[0,3,1,2])]
@@ -57,23 +62,25 @@ x,y=np,meshgrid(points,points)
 distance=np.sqrt(s**2+y**2)
 
 列表推导
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@以下这个按照布尔生成列表的写法划重点@@@@@@@@@@@@@@@@@@@@@
 r=[(x if c else y) for x,y,c in zip(xarr,yarr,cond)]
 xarr,yarr为数字数组，cond为布尔数组，cond为TRUE选xarr
 np.where是以上的矢量化高级版本，可以用于多维数组,根据一种规则产生新数组：
 np.where(cond,xarr,yarr)
 where还有更复杂的逻辑：
-np.where(arr>0,1,-1)
+np.where(arr>0,1,-1) #二值化
 np.where(arr<0,0,arr)
-np.where(cond1&cond2,0,np.where(cond1,1,np.where(cond2,2,3)))
+np.where(cond1&cond2,0,np.where(cond1,1,np.where(cond2,2,3))) #类型的数值化
 
+=======================
 统计方法：整个数组或某个轴向数据的统计函数，聚合计算
 arr.mean()
 arr.sum()
 arr.mean(axis=1)
 arr.sum(0)
 std(标准差)/var(方差)/min/max/argmin/argmax/
-cumsum(累积和)/sumprod(累积积) 返回中间结果组成的数组
-统计计算中的布尔数组强制转换为1,0
+cumsum(累积和)/sumprod(累积积) 返回中间结果组成的数组 @@@@@@@@@@@@@@@@@cumsum划重点
+统计计算中的布尔数组强制转换为1,0，所以sum可以为布尔计数 arr>o.sum @@@@@@@@@@@@@@@@@@@@@@@@sum.any,all
 bools.any()
 bools.all()
 上面还能用于非布尔数组非零元素被作为TRUE
@@ -82,7 +89,7 @@ bools.all()
 arr.sort(轴号) 由小到大，会修改数组本身
 
 数组的集合运算
-np.unique 针对一维数组，找唯一值并排序（有序集合）
+np.unique 针对一维数组，找唯一值并排序（有序集合） @@@@@@@@@@@@@@@@@@@arr.unique
 np.in1d(arr,[m,n,o]) 测试后面数组在前面数组的成员资格（包含），返回布尔数组
 
 数组文件:
@@ -112,3 +119,30 @@ np.abs(walk)>=10 返回布尔数组得到偏离中心点10步的位置
 5000个随机漫步过程：
 draws=np.random.randint(0,2,size=(5000,1000）)
 
+
+================
+实战补充：
+
+
+df[].values是np的用法 变为dnarray
+
+np.stack
+>>> a = np.array([1, 2, 3])
+>>> b = np.array([2, 3, 4])
+>>> np.vstack((a,b))
+array([[1, 2, 3],
+       [2, 3, 4]])
+
+>>> a = np.array((1,2,3))
+>>> b = np.array((2,3,4))
+>>> np.hstack((a,b))
+array([1, 2, 3, 2, 3, 4])
+
+>>> a = np.array([1, 2, 3])
+>>> b = np.array([2, 3, 4])
+>>> np.stack((a, b))
+array([[1, 2, 3],
+       [2, 3, 4]])
+
+
+NaN是np.nan类型

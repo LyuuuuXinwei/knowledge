@@ -71,7 +71,7 @@ _=data.rename(index=str.littlr/{'index1':''},columns=str.upper/{'column1':'new_n
 离散化和面元划分
 数据离散化/分组划分分析如年龄层，面元bin
 bins=[18,25,35,60,100] 连续数据分区间
-cats=pd.cut(data,bins,right=False) 右侧非闭端，默认(]左开又闭
+cats=pd.cut(data,bins,right=False) 右侧非闭端，默认(]左开又闭 cats相当于一个新列，存着data的归类面元区间
 cats.labels 将元素值变为区间面原名，默认0,1,2
 cats.index 返回面元
 pd.value_counts(cats) 统计区间元素数

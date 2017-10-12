@@ -89,3 +89,7 @@ plt.scatter_matrix(frame,diagonal='kde')把frame画成散布图矩阵，在对�
 
 其他图形化工具
 商业库很多，在向基于web方向发展（js交互式图形化工具）d3.js
+
+plt/ax.scatter(df[:,1],df[:,2],15*array(labels),15*array(labels))
+labels是K近邻划分出的所属类别，用不同颜色/类型的散点表示不同类别划分在同一张图，可以两两观察
+也可以比较直观地看出不那么有力度的划分特征
