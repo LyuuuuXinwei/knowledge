@@ -110,7 +110,7 @@ series：obj.sort_index()
 dataframe:frame.sort_index()按行标/frame.sort_index(axis=1) 列
 默认升序（ascending=False）
 按值：
-obj.order() 缺失放末尾
+null.sort_values() 缺失放末尾
 dataframe中按一个或多个列值排序：
 frame.sort_index(by='column'/by=['column1','column2'])
 排名：

@@ -146,3 +146,5 @@ array([[1, 2, 3],
 
 
 NaN是np.nan类型
+
+arr和df都有swapaxes方法
